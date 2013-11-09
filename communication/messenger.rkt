@@ -8,4 +8,15 @@
 ;return result
 ;@param device : the device which will recieve the message
 ;@param instruction-set :the message that will be sent
-(define (send device instruction-set) )
+(define (send device instruction-set) #f)
+
+
+
+;EX unsing pipes
+(define (p-dev-test name in out)
+  (let ((res (read in)))
+    (write (string-append "ack:" res) out)))
+(define-values (in out) (make-pipe))
+(write "hello" out)
+(p-dev-test "bla" in out)
+(read in)

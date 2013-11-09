@@ -2,11 +2,11 @@
 (#%require (only racket/base error))
 
 (#%require "element.rkt")
-(#%require "instruction-set.rkt")
+(#%require "instruction.rkt")
 (#%provide Actuator)
 (#%provide new-actuator)
 
-;Actuator set its ElementType (in its environment) to a given value (ex: set temperature to 20°C)
+;Actuator gives an Instruction which sets its ElementType to a given value (ex: set temperature to 20°C)
 ;Superclass : Element
 
 ;class name
@@ -20,9 +20,10 @@
     (define (class) Actuator)
     ;get superclass
     (define (super) element)
-    ;set environment's ElementType to a given value
+    ;gives Instruction "set ElementType to a given value"
     ;@param value : the given value
-    (define (set-value value) (instruction-put ((super) 'get-type) value))
+    ;@return Instruction : the corresponding Instruction
+    (define (set-value value) (new-instruction-put ((super) 'get-type) value))
     
     (define (dispatch message . args)
       (case message

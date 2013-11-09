@@ -2,11 +2,11 @@
 (#%require (only racket/base error))
 
 (#%require "element.rkt")
-(#%require "instruction-set.rkt")
+(#%require "instruction.rkt")
 (#%provide Sensor)
 (#%provide new-sensor)
 
-;Sensor gets information (according to it's ElementType) about its environment.
+;Sensor gives an Instruction "gets information (according to it's ElementType)"
 ;Superclass : Element
 
 ;class name
@@ -20,8 +20,9 @@
     (define (class) Sensor)
     ;get superclass
     (define (super) element)
-    ;get the value of ElementType in this Sensor's environment
-    (define (get-value) (instruction-get ((super) 'get-type)))
+    ;gives Instruction "get the value of ElementType" 
+    ;@return Instruction : the corresponding Instruction
+    (define (get-value) (new-instruction-get ((super) 'get-type)))
     
     (define (dispatch message . args)
       (case message
