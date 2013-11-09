@@ -19,9 +19,9 @@
                                 (check-equal? (d 'get LIGHT) #f "method(get); no sensor")
                                 (d 'add-element light-sensor)
                                 (check-equal? (d 'get TEMPERATURE) #f "method(get); wrong sensor")
-                                (fail (d 'get LIGHT) "method(get); with appropriate sensor") ;TODO
+                                (fail "(d 'get LIGHT) method(get); with appropriate sensor") ;TODO
                                 (check-equal? (d 'set LIGHT 1) #f "method(set); no actuator")
                                 (d 'add-element light-actuator)
                                 (check-equal? (d 'set TEMPERATURE 21) #f "method(set); wrong actuator")
-                                (fail (d 'set LIGHT 1) "method(set); with appropriate actuator") ;TODO
+                                (fail "(d 'set LIGHT 1) method(set); with appropriate actuator") ;TODO
                                 )))

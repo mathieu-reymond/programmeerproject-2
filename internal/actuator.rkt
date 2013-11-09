@@ -22,9 +22,9 @@
     (define (super) element)
     ;set environment's ElementType to a given value
     ;@param value : the given value
-    (define (set-value value) (instruction-put (super 'get-type) value))
+    (define (set-value value) (instruction-put ((super) 'get-type) value))
     
-    (define (dipsatch message .args)
+    (define (dispatch message . args)
       (case message
         ((class) (class))
         ((super) (super))

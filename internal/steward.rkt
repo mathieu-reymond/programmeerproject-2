@@ -1,5 +1,6 @@
 #lang r5rs
 (#%require (only racket/base error))
+(#%require (only racket/list empty?))
 
 (#%require "device.rkt")
 (#%provide Steward)
@@ -21,7 +22,7 @@
     ;get devices
     (define (get-devices) devices)
     ;add a device to this steward
-    (define (add-device device) )
+    (define (add-device device) (set! devices (cons device devices)))
     
     ;need high-order method (instruction 'instruction . args) ?
     ;ex (instruction 'get element-type)

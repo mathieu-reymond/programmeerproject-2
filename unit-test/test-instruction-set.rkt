@@ -8,9 +8,9 @@
 (define test-instruction-set (lambda () (test-case
                                          "TEST:instruction-set.rkt"
                                          (check-equal? (instruction-get LIGHT) (list 'GET LIGHT) "instruction(get)")
-                                         (check-equal? (instruction-put TEMPERATURE 20) (list 'SET TEMPERATURE 20) "instruction(put)")
+                                         (check-equal? (instruction-put TEMPERATURE 20) (list 'PUT TEMPERATURE 20) "instruction(put)")
                                          (check-equal? (instruction-set (instruction-get LIGHT) 
                                                                         (instruction-put TEMPERATURE 20)) 
                                                        (list (list 'GET LIGHT)
-                                                             (list 'SET TEMPERATURE 20))
+                                                             (list 'PUT TEMPERATURE 20))
                                                        "instruction(put)"))))

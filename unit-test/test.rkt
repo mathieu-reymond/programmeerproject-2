@@ -12,4 +12,4 @@
 (test-sensor)
 (test-actuator)
 (test-device)
-(test-setward)
+(test-steward)

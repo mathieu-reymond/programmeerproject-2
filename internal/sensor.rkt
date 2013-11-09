@@ -4,7 +4,7 @@
 (#%require "element.rkt")
 (#%require "instruction-set.rkt")
 (#%provide Sensor)
-(#%provide new-seneor)
+(#%provide new-sensor)
 
 ;Sensor gets information (according to it's ElementType) about its environment.
 ;Superclass : Element

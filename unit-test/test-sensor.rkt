@@ -10,7 +10,7 @@
 
 (define test-sensor (lambda () (test-case
                                 "TEST:sensor.rkt"
-                                (check-equal? (el 'class) Sensor "method(class)")
-                                (check-equal? ((el 'super) 'get-type) LIGHT "method(super)")
-                                (check-equal? (el 'get-value) (instruction-get LIGHT) "method(get-value)")
+                                (check-equal? (s 'class) Sensor "method(class)")
+                                (check-equal? ((s 'super) 'get-type) LIGHT "method(super)")
+                                (check-equal? (s 'get-value) (instruction-get LIGHT) "method(get-value)")
                                 )))

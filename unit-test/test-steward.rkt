@@ -27,10 +27,10 @@
                                 (check-equal? (s 'class) Steward "method(class)")
                                 (check-equal? (s 'get LIGHT) #f "method(get); no device")
                                 (check-equal? (s 'set LIGHT 1) #f "method(set); no device")
-                                (s 'add-element light-device)
+                                (s 'add-device light-device)
                                 (check-equal? (s 'get TEMPERATURE) #f "method(get); wrong device")
                                 (check-equal? (s 'set TEMPERATURE 21) #f "method(set); wrong device")
-                                (s 'add-element temp-device)
-                                (fail (s 'get LIGHT) "method(get); with appropriate device") ;TODO
-                                (fail (s 'set LIGHT 1) "method(set); with appropriate device") ;TODO
+                                (s 'add-device temp-device)
+                                (fail "(s 'get LIGHT) method(get); with appropriate device") ;TODO
+                                (fail "(s 'set LIGHT 1) method(set); with appropriate device") ;TODO
                                 )))

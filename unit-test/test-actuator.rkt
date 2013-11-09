@@ -10,7 +10,7 @@
 
 (define test-actuator (lambda () (test-case
                                   "TEST:actuator.rkt"
-                                  (check-equal? (el 'class) Actuator "method(class)")
-                                  (check-equal? ((el 'super) 'get-type) LIGHT "method(super)")
-                                  (check-equal? (el 'set-value 20) (instruction-put LIGHT 20) "method(set-value)")
+                                  (check-equal? (a 'class) Actuator "method(class)")
+                                  (check-equal? ((a 'super) 'get-type) LIGHT "method(super)")
+                                  (check-equal? (a 'set-value 20) (instruction-put LIGHT 20) "method(set-value)")
                                   )))
