@@ -7,6 +7,8 @@
 (#%require "test-actuator.rkt")
 (#%require "test-device.rkt")
 (#%require "test-steward.rkt")
+(#%require "test-hardware-device.rkt")
+(#%require "test-physical-room.rkt")
 
 (test-instruction)
 (test-parser)
@@ -15,3 +17,5 @@
 (test-actuator)
 (test-device)
 (test-steward)
+(test-hardware-device)
+(test-physical-room)

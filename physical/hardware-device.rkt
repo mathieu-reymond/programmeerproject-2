@@ -32,7 +32,7 @@
 
 ;the global map containing all hardware-devices and their ports
 ;every new hardware-device is automatically added to this map
-(define hardware-device/port-map (new-hardware/port-map))
+(define hardware-device/port-map (new-hardware-device/port-map))
 
 ;hardware-device emulates how the real hardware should work :
 ; it reads requests from it's port,
@@ -55,7 +55,7 @@
     (let* ((request (read in-port))
            (inst (list-to-instruction request)))
       ;recieved instruction, process using room as param (ex: (room 'get-temperature), then send acknowledgment)
-      (write (instruction-to-list inst) out-port))) ;temp
+      (write (get-name) out-port))) ;temp
   
   (define (dispatch message . args)
     (case message
