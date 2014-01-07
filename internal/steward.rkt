@@ -49,9 +49,11 @@
     (define (dispatch message . args)
       (case message
         ((class) (class))
+        ((get-room) (get-room))
         ((add-device) (apply add-device args))
         ((get) (apply get args))
         ((set) (apply set args))
+        ((get-devices) (get-devices)) ;read-only
         (else (error "Error : Steward.class : unknown method : " message))))
     
     dispatch))

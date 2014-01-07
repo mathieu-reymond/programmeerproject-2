@@ -7,6 +7,8 @@
 (#%provide new-instruction-put)
 (#%provide TAG_LIST)
 (#%provide new-instruction-list)
+(#%provide TAG_RET)
+(#%provide new-instruction-ret)
 
 ;an abstract Instruction class
 ;Implementations : InstructionGet, InstructionPut, InstructionList
@@ -30,11 +32,13 @@
   (let ((instruction (new-instruction TAG_GET element-type)))
     (define (tag) (instruction 'tag))
     (define (get-element-type) (instruction 'get 0))
+    (define (execute room) (room 'get (get-element-type)))
     
     (define (dispatch message . args)
       (case message
         ((tag) (tag))
         ((get-element-type) (get-element-type))
+        ((execute) (apply execute args))
         (else (error "Error : InstructionGet.class : unknown method : " message))))
     
     dispatch))
@@ -49,12 +53,14 @@
     (define (tag) (instruction 'tag))
     (define (get-element-type) (instruction 'get 0))
     (define (get-value) (instruction 'get 1))
+    (define (execute room) (room 'set (get-element-type) (get-value)))
     
     (define (dispatch message . args)
       (case message
         ((tag) (tag))
         ((get-element-type) (get-element-type))
         ((get-value) (get-value))
+        ((execute) (apply execute args))
         (else (error "Error : InstructionPut.class : unknown method : " message))))
     
     dispatch))
@@ -77,4 +83,20 @@
         ((nb-of-instructions) (nb-of-instructions))
         (else (error "Error : InstructionList.class : unknown method : " message))))
     
+    dispatch))
+
+(define TAG_RET 'RET)
+
+;the RET instruction
+;@param value the value to store
+(define (new-instruction-ret value)
+  (let ((instruction (new-instruction TAG_RET value)))
+    (define (tag) (instruction 'tag))
+    (define (get-value) (instruction 'get 0))
+    
+    (define (dispatch message . args)
+      (case message
+        ((tag) (tag))
+        ((get-value) (get-value))
+        (else (error "Error : InstructionRet.class : unknown method : " message))))
     dispatch))

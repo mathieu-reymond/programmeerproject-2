@@ -10,6 +10,7 @@
   (cond
     ((equal? (instruction 'tag) TAG_GET) (list TAG_GET (instruction 'get-element-type)))
     ((equal? (instruction 'tag) TAG_PUT) (list TAG_PUT (instruction 'get-element-type) (instruction 'get-value)))
+    ((equal? (instruction 'tag) TAG_RET) (list TAG_RET (instruction 'get-value)))
     ((equal? (instruction 'tag) TAG_LIST)
      (let loop ((ctr 0)
                 (result (list TAG_LIST)))
@@ -23,6 +24,7 @@
   (cond
     ((equal? (car lst) TAG_GET) (new-instruction-get (cadr lst)))
     ((equal? (car lst) TAG_PUT) (new-instruction-put (cadr lst) (caddr lst)))
+    ((equal? (car lst) TAG_RET) (new-instruction-ret (cadr lst)))
     ((equal? (car lst) TAG_LIST)
        (let loop ((instr-lst '())
                   (curr (cdr lst)))

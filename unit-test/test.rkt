@@ -19,3 +19,5 @@
 (test-steward)
 (test-hardware-device)
 (test-physical-room)
+
+(display "Finished testing !")

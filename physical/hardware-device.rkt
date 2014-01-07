@@ -4,6 +4,7 @@
 (#%require (only racket/base make-input-port))
 
 (#%require "../communication/parser.rkt")
+(#%require "../internal/instruction.rkt")
 (#%provide new-hardware-device)
 (#%provide hardware-device/port-map)
 
@@ -16,13 +17,13 @@
       (set! map (cons (vector device in-port out-port) map)))
     
     ;get ports of corresponding device
-    ;@param device-name : the name of the device
+    ;@param device-serial-number : the serial-number of the device
     ;@return (cons input-port output-port) : a cons with this device's input- and output-ports
-    (define (get-ports-for-hardware-device device-name)
+    (define (get-ports-for-hardware-device device-serial-number)
       (let loop ((curr map))
         (cond
-          ((equal? '() curr) #f) ;no hardware-device with this name
-          ((equal? device-name ((vector-ref (car curr) 0) 'get-name)) 
+          ((equal? '() curr) #f) ;no hardware-device with this serial-number
+          ((equal? device-serial-number ((vector-ref (car curr) 0) 'get-serial-number)) 
            (cons (vector-ref (car curr) 1) (vector-ref (car curr) 2))) ;returns (cons in-port out-port)
           (else (loop (cdr curr))))))
     
@@ -43,9 +44,9 @@
 ;  ex: get the current room temperature
 ; send an acknowledgment using it's ports.
 ;  ex: send the room temperature
-;@param name : the device's name, should be unique !
+;@param serial-number : the device's serial-number, should be unique !
 ;@param room : the room in which this device is situated
-(define (new-hardware-device name room)
+(define (new-hardware-device serial-number room)
   ;when creating a new hardware-device,
   ;open ports to communicate with this device,
   ;add ports to map
@@ -56,7 +57,7 @@
         (let* ((request (read input-port))
                (inst (list-to-instruction request)))
           ;returns answer
-          (get-name))) ;temp
+          (instruction-to-list (new-instruction-ret (inst 'execute room)))))
       ;a custom port is needed to process what is written on the output port
       ;and answer accordingly
       (let ((custom-input-port (make-input-port
@@ -77,12 +78,12 @@
         ;automatically add to device/port map
         (hardware-device/port-map 'add dispatch custom-input-port output-port))))
   
-  ;get this device's name
-  (define (get-name) name)
+  ;get this device's serial-number
+  (define (get-serial-number) serial-number)
   
   (define (dispatch message . args)
     (case message
-      ((get-name) (get-name))))
+      ((get-serial-number) (get-serial-number))))
   
   ;when creating new hardware, automatically add to device/port map
   (add-to-map)

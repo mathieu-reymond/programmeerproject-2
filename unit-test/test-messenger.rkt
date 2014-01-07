@@ -2,6 +2,8 @@
 (#%require rackunit)
 
 (#%require "../communication/messenger.rkt")
+(#%require "../communication/parser.rkt")
+(#%require "../internal/instruction.rkt")
 (#%require "../internal/device.rkt")
 (#%require "../internal/element-type.rkt")
 (#%require "../physical/hardware-device.rkt")
@@ -9,8 +11,10 @@
 (#%provide test-messenger)
 
 (define d (new-device "name" "serial-number"))
-(define hd (new-hardware-device (d 'get-name) "room"))
+(define hd (new-hardware-device (d 'get-serial-number) "room"))
 
 (define test-messenger (lambda () (test-case
                                    "TEST:messenger.rkt"
-                                   (fail "(send d (new-instruction-get LIGHT)) method(send)"))));TODO
+                                   (check-equal? (instruction-to-list (send d (new-instruction-get LIGHT)))
+                                                 (instruction-to-list (new-instruction-ret 1))
+                                                 "method(send)"))))

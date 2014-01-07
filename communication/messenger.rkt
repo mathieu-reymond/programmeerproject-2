@@ -14,7 +14,7 @@
 ;@param instruction :the message that will be sent
 ;@return isntruction : the response
 (define (send device instruction)
-  (let ((ports (hardware-device/port-map 'get-ports-for-hardware-device (device 'get-name))) ;the ports to communicate with the corresponding hardware-device
+  (let ((ports (hardware-device/port-map 'get-ports-for-hardware-device (device 'get-serial-number))) ;the ports to communicate with the corresponding hardware-device
         (parsed-instruction (instruction-to-list instruction))) ;need to parse to send over port
     (write parsed-instruction (cdr ports)) ;send instruction over port
     (let ((response (read (car ports)))) ;get response from hardware-device

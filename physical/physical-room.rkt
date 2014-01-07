@@ -38,7 +38,7 @@
     ;set the attribute to a new value
     ;@param element-type : the type of attribute you want to set
     ;@param value : the value you want the attribute to be set
-    (define (set element-type value) (vector-set! attributes (element-type-to-index element-type) value))
+    (define (set element-type value) (vector-set! attributes (element-type-to-index element-type) value) #t)
     
     (define (dispatch message . args)
       (case message
