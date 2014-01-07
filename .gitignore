@@ -1,4 +1,9 @@
 *.dep
 *.zo
 *.bak
+*.blg
+*.aux
+*.bbl
+*.log
+*.out
 **/compiled/

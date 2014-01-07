@@ -9,6 +9,11 @@
 (require "../internal/device.rkt")
 (require "../physical/physical-room.rkt")
 (require "../physical/hardware-device.rkt")
+(require "../db/manager.rkt")
+
+(provide main-frame)
+
+(define db-path "db/domotica.db")
 
 (define (panel-steward-list prnt cllbck central-unit)
   (let ((panel (new vertical-panel% [parent prnt])))
@@ -28,6 +33,7 @@
            (g-y (- c-height (/ (- c-height g-height) 2)))) ;start at 5% of canvas-height (from bottom)
       
       (define (draw-graph-line vect max)
+        (send dc set-pen (new pen% [color (make-object color% (random 256) (random 256) (random 256))]))
         (let ((prev-x g-x)
               (prev-y g-y)
               (x g-x)
@@ -47,6 +53,7 @@
                (send dc draw-line prev-x prev-y x y)
                (loop (+ curr 1)))))))
       
+      (send dc set-pen (new pen%)) ;default pen
       (send dc draw-line g-x g-y (+ g-x g-width) g-y) ;x-axis
       (send dc draw-line g-x g-y g-x (- g-y g-height)) ;y-axis
       
@@ -74,9 +81,13 @@
 (define (panel-history-steward prnt steward)
   (let* ((panel (new vertical-panel% [parent prnt])))
     (define (paint canvas dc)
-      (let ((graph (draw-graph dc)))
-        (graph (vector 20 20 19 18 21 20 22 19 18 21) 22)
-        (graph (vector 90 90 90 90 90 90 90 90 90 90) 100)))
+      (let ((graph (draw-graph dc))
+            (m (new-db-manager db-path)))
+        (graph (mcar (m 'get-steward-time-value steward)) 1)
+        (graph (mcar (mcdr (m 'get-steward-time-value steward))) 22)))
+        ;(for-each (lambda(vect) (graph vect)) (m 'get-steward-time-value steward))))
+        ;(graph (vector 20 20 19 18 21 20 22 19 18 21) 22)
+        ;(graph (vector 90 90 90 90 90 90 90 90 90 90) 100)))
     (new canvas% [parent panel] [paint-callback paint])
     panel))
 
@@ -177,7 +188,9 @@
             (define (actuator index)
               (device 'add-element (send list-actuator get-data index)))
             (for-each sensor (send list-sensor get-selections))
-            (for-each actuator (send list-actuator get-selections))))) ;display message : device added
+            (for-each actuator (send list-actuator get-selections))
+            ;add to database
+            ((new-db-manager db-path) 'add-device-type device)))) ;display message : device added
     (new button% [label "Create"] [parent panel] [callback create])
     panel))
 
@@ -201,10 +214,15 @@
       (new text-field% [parent panel] [label (device 'get-name)]))
     (define (create button event)
       (let ((room (new-physical-room (steward 'get-room)))) ;temp if add device to steward,  need to extract room
-        (for-each (lambda(tf) 
+        (for-each (lambda(tf)
+                    ;add device to steward
                     (steward 'add-device (new-device (send tf get-label) (send tf get-value)))
+                    ;add hardware
                     (new-hardware-device (send tf get-value) room))
                   (send panel get-children))
+        ;add to database
+        ((new-db-manager db-path) 'add-steward steward)
+        ;add to central-unit
         (central-unit 'add-steward steward)))
     (for-each add-text-field device-list)
     (new button% [label "Create"] [parent dialog] [callback create])
@@ -253,14 +271,7 @@
     (new button% [parent panel-button] [label "New Device"] [callback callback-settings-device])
     panel))
 
-(define bedroom-steward (new-steward "bedroom"))
-(define bathroom-steward (new-steward "bathroom"))
-(define central-unit (new-central-unit))
-(central-unit 'add-steward bedroom-steward)
-(central-unit 'add-steward bathroom-steward)
-
-(define main-frame (new frame% [label "Domotica"]
-                        [min-width 300]
-                        [min-height 300]))
-
-(panel-main main-frame central-unit)
+(define (main-frame central-unit m-width m-height)
+  (let ((main-frame (new frame% [label "Domotica"] [min-width m-width] [min-height m-height])))
+    (panel-main main-frame central-unit)
+    main-frame))
