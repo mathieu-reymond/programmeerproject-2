@@ -5,6 +5,7 @@
 (#%require "actuator.rkt")
 (#%require "sensor.rkt")
 (#%require "../communication/messenger.rkt")
+(#%require "../communication/action.rkt")
 (#%provide Device)
 (#%provide new-device)
 (#%provide device-types)
@@ -22,7 +23,11 @@
         already-exists))
     (define (add-device device)
       (if (not (contains? (device 'get-name)))
-          (set! devices (cons device devices))
+          (begin
+            (set! devices (cons device devices))
+            ((new-action (string-append "Created device \""
+                                        (device 'get-name)
+                                        "\"")) 'write))
           #f))
     (define (get-device name)
       (let ((device #f))
@@ -82,7 +87,7 @@
                        (equal? ((current 'super) 'get-type) element-type))
                   (let ((is (current 'set-value value)))
                     ;send instruction-set to physical device using messenger:send
-                     ((send dispatch is) 'get-value) ;should be a RET-instruction, with response stored in value
+                    ((send dispatch is) 'get-value) ;should be a RET-instruction, with response stored in value
                     )
                   (loop (cdr els)))))))
     

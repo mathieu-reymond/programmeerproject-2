@@ -18,6 +18,8 @@
       (let ((steward #f))
         (for-each-steward (lambda(s) (if (equal? (s 'get-room) room) (set! steward s))))
         steward))
+    (define (get-stewards)
+      stewards)
     
     (define (dispatch message . args)
       (case message
@@ -25,6 +27,7 @@
         ((for-each-steward) (apply for-each-steward args))
         ((add-steward) (apply add-steward args))
         ((get-steward) (apply get-steward args))
+        ((get-stewards) (get-stewards))
         (else (error "Error : CentralUnit.class : unknown method : " message))))
     
     dispatch))

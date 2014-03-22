@@ -3,6 +3,9 @@
 (#%require (only racket/list empty?))
 
 (#%require "device.rkt")
+(#%require "../structure/map.rkt")
+(#%require "../communication/action.rkt")
+(#%require "element-type.rkt")
 (#%provide Steward)
 (#%provide new-steward)
 
@@ -22,7 +25,13 @@
     ;get devices
     (define (get-devices) devices)
     ;add a device to this steward
-    (define (add-device device) (set! devices (cons device devices)))
+    (define (add-device device) 
+      (set! devices (cons device devices))
+      ((new-action (string-append "Added device \""
+                                  (device 'get-name)
+                                  "\" to steward \""
+                                  (get-room)
+                                  "\"")) 'write))
     
     ;need high-order method (instruction 'instruction . args) ?
     ;ex (instruction 'get element-type)
@@ -41,10 +50,18 @@
         (if (empty? devs)
             #f ;no device with elements to match request
             (let ((result ((car devs) 'set element-type value)))
-              (if result ;result != false means we found a valid result
-                  result
-                  (loop (cdr devs)))))))
-                  
+              (cond
+                (result ;result != false means we found a valid result
+                 ((new-action (string-append "Set "
+                                             (to-string element-type)
+                                             " to "
+                                             (number->string value)
+                                             " in steward \""
+                                             (get-room)
+                                             "\"")) 'write)
+                 result)
+                (else (loop (cdr devs))))))))
+    
     
     (define (dispatch message . args)
       (case message

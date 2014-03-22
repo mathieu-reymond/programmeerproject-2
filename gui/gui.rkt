@@ -10,6 +10,12 @@
 (require "../physical/physical-room.rkt")
 (require "../physical/hardware-device.rkt")
 (require "../db/manager.rkt")
+(require "panel-overview-steward.rkt")
+(require "panel-overview-element-type.rkt")
+(require "panel-history-steward.rkt")
+(require "panel-steward.rkt")
+(require "panel-log.rkt")
+(require "panel-modify-steward.rkt")
 
 (provide main-frame)
 
@@ -23,103 +29,6 @@
            [callback cllbck]))
     (central-unit 'for-each-steward steward-name)
     
-    panel))
-
-(define (draw-graph dc)
-  (let-values (((c-width c-height) (send dc get-size)))
-    (let* ((g-width (- c-width (/ c-width 10))) ;90% of canvas-width
-           (g-height (- c-height (/ c-height 10))) ;90% of canvas-height
-           (g-x (/ (- c-width g-width) 2)) ;start at 5% of canvas-width
-           (g-y (- c-height (/ (- c-height g-height) 2)))) ;start at 5% of canvas-height (from bottom)
-      
-      (define (draw-graph-line vect max)
-        (send dc set-pen (new pen% [color (make-object color% (random 256) (random 256) (random 256))]))
-        (let ((prev-x g-x)
-              (prev-y g-y)
-              (x g-x)
-              (y g-y))
-          (define (point i)
-            (let ((w (/ g-width (vector-length vect)))
-                  (h (/ g-height max)))
-              (set! prev-x x)
-              (set! prev-y y)
-              (set! x (+ (* i w) g-x))
-              (set! y (- g-y (* h (vector-ref vect i))))))
-          (let loop ((curr 0))
-            (cond
-              ((equal? curr (vector-length vect)) #t) ;done
-              (else
-               (point curr)
-               (send dc draw-line prev-x prev-y x y)
-               (loop (+ curr 1)))))))
-      
-      (send dc set-pen (new pen%)) ;default pen
-      (send dc draw-line g-x g-y (+ g-x g-width) g-y) ;x-axis
-      (send dc draw-line g-x g-y g-x (- g-y g-height)) ;y-axis
-      
-      (lambda(vect max) (draw-graph-line vect max)))))
-
-(define (panel-overview-steward prnt steward)
-  (let* ((panel (new vertical-panel% [parent prnt]
-                     [alignment '(left top)])))
-    (new message% [parent panel]
-         [label (steward 'get-room)])
-    (let* ((hor-panel (new horizontal-panel% [parent panel]))
-           (left-panel (new vertical-panel% [parent hor-panel]
-                            [alignment '(left top)]))
-           (right-panel (new vertical-panel% [parent hor-panel]
-                             [alignment '(right top)])))
-      (define (element-name e)
-        (new message% [parent left-panel] [label (to-string e)]))
-      (define (element-value e)
-        (new message% [parent right-panel] [label (if (steward 'get e) (number->string (steward 'get e)) "unknown")]))
-      (for-each-element-type element-name)
-      (for-each-element-type element-value))
-    
-    panel))
-
-(define (panel-history-steward prnt steward)
-  (let* ((panel (new vertical-panel% [parent prnt])))
-    (define (paint canvas dc)
-      (let ((graph (draw-graph dc))
-            (m (new-db-manager db-path)))
-        (graph (mcar (m 'get-steward-time-value steward)) 1)
-        (graph (mcar (mcdr (m 'get-steward-time-value steward))) 22)))
-        ;(for-each (lambda(vect) (graph vect)) (m 'get-steward-time-value steward))))
-        ;(graph (vector 20 20 19 18 21 20 22 19 18 21) 22)
-        ;(graph (vector 90 90 90 90 90 90 90 90 90 90) 100)))
-    (new canvas% [parent panel] [paint-callback paint])
-    panel))
-
-(define (panel-overview-element-type prnt element-type central-unit)
-  (let* ((panel (new vertical-panel% [parent prnt]
-                     [alignment '(left top)])))
-    (new message% [parent panel] [label (to-string element-type)])
-    (let* ((hor-panel (new horizontal-panel% [parent panel]))
-           (left-panel (new vertical-panel% [parent hor-panel] [alignment '(left top)]))
-           (right-panel (new vertical-panel% [parent hor-panel] [alignment '(right top)])))
-      (define (steward-name s)
-        (new message% [parent left-panel] [label (s 'get-room)]))
-      (define (steward-value s)
-        (new message% [parent right-panel] [label (if (steward 'get element-type) 
-                                                      (steward 'get element-type) 
-                                                      "unknown")]))
-      (central-unit 'for-each-steward steward-name)
-      (central-unit 'for-each-steward steward-value))
-    
-    panel))
-
-(define (panel-steward prnt steward)
-  (define (change-tab tab event)
-    (send tab delete-child (car (send tab get-children)))
-    (cond
-      ((equal? (send tab get-selection) 0)
-       (panel-overview-steward tab steward))
-      ((equal? (send tab get-selection) 1)
-       (panel-history-steward tab steward))))
-  ;(new message% [parent tab] [label "History"]))))
-  (let* ((panel (new tab-panel% [choices '("Overview" "History")] [parent prnt] [callback change-tab])))
-    (panel-overview-steward panel steward)
     panel))
 
 (define (panel-element-type prnt element-type central-unit)
@@ -249,7 +158,8 @@
 
 (define (panel-settings-steward prnt central-unit)
   (let* ((panel (new horizontal-panel% [parent prnt]))
-         (list-steward (panel-steward-list panel (lambda(b e) void) central-unit))
+         ;(list-steward (panel-steward-list panel (lambda(b e) void) central-unit))
+         (list-steward (panel-modify-steward panel central-unit))
          (new-steward (panel-create-steward panel central-unit)))
     panel))
 
@@ -266,9 +176,13 @@
     (define (callback-settings-device button event)
       (send panel delete-child panel-current)
       (set! panel-current (panel-settings-device panel)))
+    (define (callback-log button event)
+      (send panel delete-child panel-current)
+      (set! panel-current (panel-log panel)))
     (new button% [parent panel-button] [label "Overview"] [callback callback-overview])
     (new button% [parent panel-button] [label "New Steward"] [callback callback-settings-steward])
     (new button% [parent panel-button] [label "New Device"] [callback callback-settings-device])
+    (new button% [parent panel-button] [label "Log"] [callback callback-log])
     panel))
 
 (define (main-frame central-unit m-width m-height)
