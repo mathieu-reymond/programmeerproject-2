@@ -1,10 +1,10 @@
-#lang racket
-(require racket/date)
+#lang r5rs
+(#%require racket/date)
+;(#%require (only racket/base error))
+(#%require racket/base)
 
-(require "time-interval.rkt")
-(provide new-once)
-(provide new-daily)
-(provide new-weekly)
+(#%require "time-interval.rkt")
+(#%provide new-recurrence)
 
 (define (date->until-date date)
   (make-date 59
@@ -19,27 +19,36 @@
              (date-time-zone-offset date)))
 
 ;until is (day-limit+1 at midnight)-1sec
-(define (new-recurrence next-time until)
-  (define (next begin-date end-date)
-    (let* ((begin-sec (date->seconds begin-date))
-           (end-sec (date->seconds end-date))
-           (new-begin (seconds->date (+ begin-sec next-time)))
-           (new-end (seconds->date (+ end-sec next-time))))
-      (if (< (date->seconds until) (date->seconds new-begin))
+(define (new-rec type next-time until)
+  (define (get-type) type)
+  (define (get-end) until)
+  (define (next date)
+    (let* ((time (date->seconds date))
+           (new-time (seconds->date (+ time next-time))))
+      (if (< (date->seconds until) (date->seconds new-time))
           #f
-          (new-time-interval new-begin new-end (new-recurrence next-time until)))))
+          (new-time-interval new-time (new-rec type next-time until)))))
   
   (define (dispatch message . args)
     (case message
+      ((get-type) (get-type))
+      ((get-end) (get-end))
       ((next) (apply next args))))
   
   dispatch)
 
 ;no recurrence
-(define (new-once until) (new-recurrence 0 (date->until-date until)))
+(define (new-once until) (new-rec "once" 0 (date->until-date until)))
 ;every day
 (define day 86400)
-(define (new-daily until) (new-recurrence day (date->until-date until)))
+(define (new-daily until) (new-rec "daily" day (date->until-date until)))
 ;every week
 (define week 604800)
-(define (new-weekly until) (new-recurrence week (date->until-date until)))
+(define (new-weekly until) (new-rec "weekly" week (date->until-date until)))
+
+(define (new-recurrence type until)
+  (cond
+    ((eq? type "once") (new-once until))
+    ((eq? type "daily") (new-daily until))
+    ((eq? type "weekly") (new-weekly until))
+    (else (error "Error : Recurrence.class : unknown recurrence : " type))))

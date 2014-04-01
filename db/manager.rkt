@@ -2,6 +2,8 @@
 (#%require db/base)
 (#%require db/sqlite3)
 (#%require (rename racket/base rkt:for-each for-each))
+(#%require (only racket/base seconds->date))
+(#%require (only racket/date date->seconds))
 
 (#%require "../internal/steward.rkt")
 (#%require "../internal/device.rkt")
@@ -10,6 +12,10 @@
 (#%require "../internal/element.rkt")
 (#%require "../internal/element-type.rkt")
 (#%require "../internal/central-unit.rkt")
+(#%require "../structure/map.rkt")
+(#%require "../rule/rule.rkt")
+(#%require "../rule/time-interval.rkt")
+(#%require "../rule/recurrence.rkt")
 
 (#%provide new-db-manager)
 
@@ -43,6 +49,16 @@
                                             "time int, "
                                             "value int, "
                                             "FOREIGN KEY (room) REFERENCES Stewards(room))"))
+      (query-exec connection (string-append "CREATE TABLE Rules (room char(20), "
+                                            "time int, "
+                                            "element int, "
+                                            "value int, "
+                                            "recurrence char(20), "
+                                            "end int, "
+                                            "PRIMARY KEY (room, time, element), "
+                                            "FOREIGN KEY (room) REFERENCES Stewards(room), "
+                                            "FOREIGN KEY (element) REFERENCES ElementTypes(type))"))
+      
       connection))
   
   (define (fill-ElementTypes)
@@ -100,12 +116,62 @@
                                                 (device 'get-name) "', '"
                                                 (steward 'get-room) "')")))))
   
+  (define (remove-device device)
+    (let ((connection (connect-to-db)))
+      ;if test necessary ?
+      (if (query-maybe-value connection (string-append "SELECT serial FROM Devices WHERE serial = '"
+                                                       (device 'get-serial-number) "'"))
+          (query-exec connection (string-append "DELETE FROM Devices WHERE serial = '"
+                                                (device 'get-serial-number) "'"))
+          #f)))
+  
+  (define (get-rules steward)
+    (define (loop lst res)
+      (if (eq? '() lst)
+          res
+          (loop (cdr lst) (cons (new-rule (element (vector-ref (car lst) 2))
+                                          (vector-ref (car lst) 3)
+                                          (new-time-interval (seconds->date (vector-ref (car lst) 1))
+                                                             (new-recurrence (vector-ref (car lst) 4)
+                                                                             (seconds->date (vector-ref (car lst) 5)))))
+                                res))))
+    (let* ((connection (connect-to-db)))
+      (loop (query-rows connection (string-append "SELECT * FROM Rules WHERE room ='"
+                                                  (steward 'get-room) "'"))
+            '())))
+  
+  (define (delete-rules steward)
+    (let ((connection (connect-to-db)))
+      (query-exec connection (string-append "DELETE FROM Rules WHERE room = '"
+                                            (steward 'get-room) "'"))))
+  
+  (define (update-rules steward)
+    (let ((connection (connect-to-db))
+          (rule-manager (steward 'get-rule-manager)))
+      (delete-rules steward)
+      (for-each (lambda(rule)
+                  (query-exec connection (string-append "INSERT INTO Rules VALUES ('"
+                                                        (steward 'get-room) "', "
+                                                        (number->string (date->seconds ((rule 'get-interval) 'get-date))) ", "
+                                                        (number->string (rule 'get-element-type)) ", "
+                                                        (number->string (rule 'get-value)) ", '"
+                                                        (((rule 'get-interval) 'get-recurrence) 'get-type) "', "
+                                                        (number->string (date->seconds (((rule 'get-interval) 'get-recurrence) 'get-end))) ")")))
+                (rule-manager 'get-rules))))
+  
   (define (add-steward steward)
     (let ((connection (connect-to-db)))
       (query-exec connection (string-append "INSERT INTO Stewards VALUES ('"
                                             (steward 'get-room)
                                             "')"))
       (for-each (lambda (device) (add-device device steward)) (steward 'get-devices))))
+  
+  (define (remove-steward steward)
+    (let ((connection (connect-to-db)))
+      (delete-rules steward)
+      (query-exec connection (string-append "DELETE FROM Stewards WHERE room = '"
+                                            (steward 'get-room) "'"))
+      (for-each (lambda (device) (remove-device device)) (steward 'get-devices))))
   
   (define (add-time-value steward element time value)
     (let ((connection (connect-to-db)))
@@ -117,22 +183,16 @@
   
   (define (get-steward-time-value steward)
     (let* ((connection (connect-to-db))
-           (lst '()))
+           (vals (new-map)))
       (define (res-for-element element)
-        (let ((res (query-list connection (string-append "SELECT value FROM ElementTypeValues WHERE room ='"
+        (let ((res (query-rows connection (string-append "SELECT time, value FROM ElementTypeValues WHERE room ='"
                                                          (steward 'get-room) "' AND element = "
                                                          (number->string element) " "
-                                                         "ORDER BY time ASC")))
-              (size 0)
-              (vector #f))
-          (rkt:for-each (lambda (e) (set! size (+ size 1))) res)
-          (set! vector (make-vector size))
-          (set! size 0)
-          (rkt:for-each (lambda (e) (vector-set! vector size e) (set! size (+ size 1))) res)
-          (set! lst (cons vector lst))
-          lst))
+                                                         "ORDER BY time ASC"))))
+          (vals 'add! element res)))
       (for-each-element-type res-for-element)
-      lst))
+      vals))  
+  
   
   (define (restore-state)
     (let ((connection (connect-to-db))
@@ -166,6 +226,10 @@
         (rkt:for-each (lambda (s) (set! stewards (cons (new-steward (vector-ref s 0)) stewards))) res))
       (let ((res (query-rows connection "SELECT * FROM Devices")))
         (rkt:for-each (lambda(d) ((find-stewards (vector-ref d 2)) 'add-device (new-device (vector-ref d 1) (vector-ref d 0)))) res))
+      (for-each (lambda (s)
+                  (let ((rules (get-rules s))
+                        (rule-manager (s 'get-rule-manager)))
+                    (for-each (lambda(r) (rule-manager 'add-rule r)) rules))) stewards)
       (for-each (lambda (s) (central-unit 'add-steward s)) stewards)
       central-unit))
   
@@ -173,9 +237,13 @@
     (case message
       ((add-device-type) (apply add-device-type args))
       ((add-device) (apply add-device args))
+      ((remove-device) (apply remove-device args))
       ((add-steward) (apply add-steward args))
+      ((remove-steward) (apply remove-steward args))
       ((add-time-value) (apply add-time-value args))
       ((get-steward-time-value) (apply get-steward-time-value args))
+      ((get-rules) (apply get-rules args))
+      ((update-rules) (apply update-rules args))
       ((restore-state) (restore-state))))
   
   dispatch)

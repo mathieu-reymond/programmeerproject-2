@@ -12,8 +12,20 @@
     (define (add! key map)
       (maps 'add! key map))
     (define (find key) (maps 'find key))
-    (define (get-maps) (maps 'get-elements))
-    (define (get-keys) (maps 'get-keys))
+    (define (get-maps)
+      ;needed to convert r5rs to racket
+      (let loop ((current (maps 'get-elements))
+                 (res '()))
+        (if (eq? '() current)
+            res
+            (loop (mcdr current) (cons (mcar current) res)))))
+    (define (get-keys)
+      ;needed to convert r5rs to racket
+      (let loop ((current (maps 'get-keys))
+                 (res '()))
+        (if (eq? '() current)
+            res
+            (loop (mcdr current) (cons (mcar current) res)))))
     
     (define (map-to-line map)
       (let loop ((result '())
@@ -21,17 +33,17 @@
         (cond
           ((eq? '() current) result)
           (else
-           (loop (cons (vector (car current) 
-                               (map 'find (car current))) 
+           (loop (cons (vector (mcar current) 
+                               (map 'find (mcar current))) 
                        result) 
-                 (cdr current))))))
+                 (mcdr current))))))
     
     (define (draw)
       (let loop ((graph-lines '())
                  (current (get-keys))
                  (color 1))
         (if (eq? '() current)
-            (plot-bitmap graph-lines)
+            (plot-bitmap graph-lines #:y-min 0 #:y-max 100)
             (loop (cons (lines (map-to-line (find (car current)))
                                #:label (car current)
                                #:color color)

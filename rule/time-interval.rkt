@@ -1,27 +1,25 @@
-#lang racket
-(require racket/date)
+#lang r5rs
+(#%require racket/date)
 
-(provide new-time-interval)
+(#%provide new-time-interval)
 
-(define (new-time-interval begin-date end-date recurr)
-  (define (get-begin-date) begin-date)
-  (define (get-end-date) end-date)
+(define (new-time-interval date recurr)
+  (define (get-date) date)
   (define (get-recurrence) recurr)
-  (define (is-in-interval date)
-    (let loop ((beg begin-date) (end end-date))
-      (let ((next (recurr 'next beg end)))
+  (define (is-on-time time)
+    (let loop ((d date))
+      (let ((next (recurr 'next d)))
         (cond
-          ((< (date->seconds end) (date->seconds date))
+          ((< (date->seconds d) (date->seconds time))
            (if next
-               (loop (next 'get-begin-date) (next 'get-end-date))
+               (loop (next 'get-date))
                #f))
-          ((< (date->seconds beg) (date->seconds date)) #t)
+          ((= (date->seconds d) (date->seconds time)) #t)
           (else #f)))))
   
   (define (dispatch message . args)
     (case message
-      ((get-begin-date) (get-begin-date))
-      ((get-end-date) (get-end-date))
+      ((get-date) (get-date))
       ((get-recurrence) (get-recurrence))
-      ((is-in-interval) (apply is-in-interval args))))
+      ((is-on-time) (apply is-on-time args))))
   dispatch)

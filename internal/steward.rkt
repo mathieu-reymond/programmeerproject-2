@@ -3,9 +3,9 @@
 (#%require (only racket/list empty?))
 
 (#%require "device.rkt")
-(#%require "../structure/map.rkt")
 (#%require "../communication/action.rkt")
 (#%require "element-type.rkt")
+(#%require "../rule/rule-manager.rkt")
 (#%provide Steward)
 (#%provide new-steward)
 
@@ -17,13 +17,31 @@
 ;constructor
 ;@param room : the room in which this Steward is located
 (define (new-steward room)
-  (let ((devices '()))
+  (let ((devices '())
+        (rule-manager '()))
     ;get class-name
     (define (class) Steward)
     ;get room
     (define (get-room) room)
     ;get devices
     (define (get-devices) devices)
+    ;remove a device
+    (define (remove-device device)
+      (define (loop previous current)
+        (cond
+          ((eq? '() current) #f) ;not in list
+          ((eq? (car current) device)
+           (if (eq? '() previous)
+               (set! devices (cdr devices))
+               (set-cdr! previous (cdr current))))
+          (else
+           (loop current (cdr current)))))
+      (loop '() (get-devices))
+      ((new-action (string-append "Removed device \""
+                                  (device 'get-name)
+                                  "\" from steward \""
+                                  (get-room)
+                                  "\"")) 'write))
     ;add a device to this steward
     (define (add-device device) 
       (set! devices (cons device devices))
@@ -62,15 +80,20 @@
                  result)
                 (else (loop (cdr devs))))))))
     
+    (define (get-rule-manager) rule-manager)
+    
     
     (define (dispatch message . args)
       (case message
         ((class) (class))
         ((get-room) (get-room))
         ((add-device) (apply add-device args))
+        ((remove-device) (apply remove-device args))
         ((get) (apply get args))
         ((set) (apply set args))
         ((get-devices) (get-devices)) ;read-only
+        ((get-rule-manager) (get-rule-manager))
         (else (error "Error : Steward.class : unknown method : " message))))
     
+    (set! rule-manager (new-rule-manager dispatch))
     dispatch))

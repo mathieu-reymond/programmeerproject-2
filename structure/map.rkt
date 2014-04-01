@@ -1,5 +1,6 @@
 #lang r5rs
 ;(require rnrs/mutable-pairs-6)
+(#%require (only racket/base error))
 
 (#%provide new-map)
 
@@ -35,6 +36,7 @@
         ((remove!) (apply remove! args))
         ((find) (apply find args))
         ((get-elements) (get-elements))
-        ((get-keys) (get-keys))))
+        ((get-keys) (get-keys))
+        (else (error "Error : Map.class : unknown method : " message))))
     
     dispatch))

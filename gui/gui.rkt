@@ -16,6 +16,7 @@
 (require "panel-steward.rkt")
 (require "panel-log.rkt")
 (require "panel-modify-steward.rkt")
+(require "panel-new-rule.rkt")
 
 (provide main-frame)
 
@@ -179,10 +180,14 @@
     (define (callback-log button event)
       (send panel delete-child panel-current)
       (set! panel-current (panel-log panel)))
+    (define (callback-rule button event)
+      (send panel delete-child panel-current)
+      (set! panel-current (panel-new-rule panel central-unit)))
     (new button% [parent panel-button] [label "Overview"] [callback callback-overview])
     (new button% [parent panel-button] [label "New Steward"] [callback callback-settings-steward])
     (new button% [parent panel-button] [label "New Device"] [callback callback-settings-device])
     (new button% [parent panel-button] [label "Log"] [callback callback-log])
+    (new button% [parent panel-button] [label "Rule"] [callback callback-rule])
     panel))
 
 (define (main-frame central-unit m-width m-height)

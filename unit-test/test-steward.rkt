@@ -39,4 +39,8 @@
                                 (s 'add-device temp-device)
                                 (check-equal? (s 'set LIGHT 0) #t "method(set); with appropriate device")
                                 (check-equal? (s 'get LIGHT) 0 "method(get); with appropriate device")
+                                (s 'remove-device temp-device)
+                                (check-equal? (s 'get-devices) (list light-device) "method(remove-device)")
+                                (s 'remove-device light-device)
+                                (check-equal? (s 'get-devices) '() "method(remove-device)")
                                 )))
