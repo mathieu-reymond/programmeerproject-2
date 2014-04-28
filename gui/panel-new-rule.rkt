@@ -7,7 +7,10 @@
 (require "../rule/rule.rkt")
 (require "../rule/time-interval.rkt")
 (require "../rule/recurrence.rkt")
+(require "../db/manager.rkt")
 (provide panel-new-rule)
+
+(define db-path "db/domotica.db")
 
 (define (numbered-list start end)
   (let loop ((ctr end)
@@ -60,16 +63,6 @@
                         [choices (numbered-list 1 31)] 
                         [parent end-date]
                         [selection (- (date-day (current-date)) 1)]))
-         (end-hours (new choice% 
-                         [label "Hour"] 
-                         [choices (numbered-list 0 23)] 
-                         [parent end-date]
-                         [selection (- (date-hour (current-date)) 1)]))
-         (end-minutes (new choice% 
-                           [label "Minute"] 
-                           [choices (numbered-list 0 59)] 
-                           [parent end-date]
-                           [selection (- (date-minute (current-date)) 1)]))
          (rec-panel (new horizontal-panel% [parent panel]))
          (rec-choice (new choice%
                           [label #f]
@@ -97,22 +90,28 @@
          (new-value (new text-field%
                          [label "Value"]
                          [parent element-panel])))
-    (define (rule-callback button event) ;TODO
-      (let ((start (seconds->date (find-seconds 0
+    (define (rule-callback button event)
+      (let ((selected-recurrence (if (send recurrence get-value)
+                                     (send rec-choice get-string-selection)
+                                     "once"))
+            (selected-steward (central-unit 'get-steward (send stewards get-string-selection)))
+            (start (seconds->date (find-seconds 0
                                                 (string->number (send begin-minutes get-string-selection))
                                                 (string->number (send begin-hours get-string-selection))
                                                 (string->number (send begin-days get-string-selection))
                                                 (string->number (send begin-months get-string-selection))
                                                 (date-year (current-date)))))
             (end (seconds->date (find-seconds 0
-                                              (string->number (send end-minutes get-string-selection))
-                                              (string->number (send end-hours get-string-selection))
+                                              0
+                                              0
                                               (string->number (send end-days get-string-selection))
                                               (string->number (send end-months get-string-selection))
                                               (date-year (current-date))))))
-        (new-rule (actuator-map 'find (send element-types get-selection))
-                  (string->number (send new-value get-value))
-                  (new-time-interval start end (new-recurrence "once" end)))))
+        ((selected-steward 'get-rule-manager) 'add-rule
+                                              (new-rule (actuator-map 'find (send element-types get-string-selection))
+                                                        (string->number (send new-value get-value))
+                                                        (new-time-interval start (new-recurrence selected-recurrence end))))
+        ((new-db-manager db-path) 'update-rules selected-steward)))
     (send end-date show #f)
     (send rec-choice show #f)
     (new button% [label "Add Rule"] [parent panel] [callback rule-callback])

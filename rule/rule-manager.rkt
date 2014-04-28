@@ -10,6 +10,17 @@
     (define (get-steward) steward)
     (define (add-rule rule) (set! rules (cons rule rules)))
     (define (get-rules) rules)
+    (define (remove-rule rule)
+      (define (loop current previous)
+        (cond
+          ((eq? '() current) #f) ;rule not in list
+          ((eq? rule (car current))
+           (if (eq? '() previous)
+               (set! rules (cdr current))
+               (set-cdr! previous (cdr current)))
+           #t) ;found and removed rule
+          (else (loop (cdr current) current))))
+      (loop rules '()))
     (define (manage)
       (define (refresh)
         (for-each (lambda (r) (r 'execute steward)) rules)
@@ -22,6 +33,7 @@
         ((get-steward) (get-steward))
         ((get-rules) (get-rules))
         ((add-rule) (apply add-rule args))
+        ((remove-rule) (apply remove-rule args))
         ((manage) (manage))))
     
     dispatch))

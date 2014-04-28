@@ -3,6 +3,7 @@
 (#%require (only racket/class send))
 (#%require (only racket/base thread))
 (#%require (only racket/base date current-seconds))
+(#%require (only racket/base sleep))
 
 (#%require "internal/element-type.rkt")
 (#%require "physical/physical-room.rkt")

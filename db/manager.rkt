@@ -126,19 +126,17 @@
           #f)))
   
   (define (get-rules steward)
-    (define (loop lst res)
-      (if (eq? '() lst)
-          res
-          (loop (cdr lst) (cons (new-rule (element (vector-ref (car lst) 2))
-                                          (vector-ref (car lst) 3)
-                                          (new-time-interval (seconds->date (vector-ref (car lst) 1))
-                                                             (new-recurrence (vector-ref (car lst) 4)
-                                                                             (seconds->date (vector-ref (car lst) 5)))))
-                                res))))
-    (let* ((connection (connect-to-db)))
-      (loop (query-rows connection (string-append "SELECT * FROM Rules WHERE room ='"
-                                                  (steward 'get-room) "'"))
-            '())))
+    (let* ((connection (connect-to-db))
+           (res '()))
+      (rkt:for-each (lambda(e) (set! res (cons (new-rule (vector-ref e 2)
+                                                         (vector-ref e 3)
+                                                         (new-time-interval (seconds->date (vector-ref e 1))
+                                                                            (new-recurrence (vector-ref e 4)
+                                                                                            (seconds->date (vector-ref e 5)))))
+                                               res)))
+                    (query-rows connection (string-append "SELECT * FROM Rules WHERE room ='"
+                                                          (steward 'get-room) "'")))
+      res))
   
   (define (delete-rules steward)
     (let ((connection (connect-to-db)))

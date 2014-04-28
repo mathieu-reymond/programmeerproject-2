@@ -48,7 +48,7 @@
 
 (define (new-recurrence type until)
   (cond
-    ((eq? type "once") (new-once until))
-    ((eq? type "daily") (new-daily until))
-    ((eq? type "weekly") (new-weekly until))
+    ((equal? type "once") (new-once until))
+    ((equal? type "daily") (new-daily until))
+    ((equal? type "weekly") (new-weekly until))
     (else (error "Error : Recurrence.class : unknown recurrence : " type))))
