@@ -5,14 +5,20 @@
 (#%require (only racket/base date current-seconds))
 (#%require (only racket/base sleep))
 
-(#%require "internal/element-type.rkt")
-(#%require "physical/physical-room.rkt")
-(#%require "physical/hardware-device.rkt")
-(#%require "gui/gui.rkt")
-(#%require "db/manager.rkt")
+(#%require "internal/element-type.rkt"
+           "physical/physical-room.rkt"
+           "physical/hardware-device.rkt"
+           "physical/steward-server.rkt"
+           "gui/gui.rkt" 
+           "db/manager.rkt")
 
 ;database manager
 (define manager (new-db-manager "db/domotica.db"))
+
+;Raspberry Pi servers
+(thread (lambda() (new-steward-server "bedroom")))
+(thread (lambda() (new-steward-server "kitchen")))
+(thread (lambda() (new-steward-server "living-room")))
 
 ;central-unit from database
 (define central-unit (manager 'restore-state))

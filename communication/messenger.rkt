@@ -1,8 +1,26 @@
 #lang r5rs
+(#%require racket/tcp
+           (only racket/base let-values))
 
-(#%require "parser.rkt")
-(#%require "../physical/hardware-device.rkt")
-(#%provide send)
+(#%require "parser.rkt"
+           "../structure/map.rkt"
+           "../structure/hash.rkt"
+           "../physical/hardware-device.rkt")
+
+(#%provide send
+           new-steward-ports
+           steward-port-map)
+
+(define steward-port-map (new-map))
+
+(define steward-in-port car)
+(define steward-out-port cdr)
+(define (new-steward-ports steward)
+  (let-values (((in out) (tcp-connect "localhost"
+                                      (djb2-port (steward 'get-room)))))
+    (cons in out)))
+
+
 
 ;Send the instruction-set to the device.
 ;Open a pipe (input/output port) to communicate with the device,
@@ -19,3 +37,11 @@
     (write parsed-instruction (cdr ports)) ;send instruction over port
     (let ((response (read (car ports)))) ;get response from hardware-device
       (list-to-instruction response)))) ;returns response as an instruction
+
+
+(define (send2 steward-room device instruction)
+  (let ((ports (steward-port-map 'find steward-room))
+        (parsed-instruction (instruction-to-list instruction)))
+    (write (cons (device 'get-serial-number) parsed-instruction) (steward-out-port ports))
+    (let ((response (read (steward-in-port ports))))
+      (list-to-instruction response))))

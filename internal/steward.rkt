@@ -1,11 +1,12 @@
 #lang r5rs
-(#%require (only racket/base error))
-(#%require (only racket/list empty?))
+(#%require (only racket/base error)
+           (only racket/list empty?))
 
-(#%require "device.rkt")
-(#%require "../communication/action.rkt")
-(#%require "element-type.rkt")
-(#%require "../rule/rule-manager.rkt")
+(#%require "device.rkt"
+           "../communication/action.rkt"
+           "../communication/messenger.rkt"
+           "element-type.rkt"
+           "../rule/rule-manager.rkt")
 (#%provide Steward)
 (#%provide new-steward)
 
@@ -96,4 +97,7 @@
         (else (error "Error : Steward.class : unknown method : " message))))
     
     (set! rule-manager (new-rule-manager dispatch))
+    ;client ports
+    (steward-port-map 'add! (get-room) (new-steward-ports dispatch))
+    (display room)
     dispatch))
