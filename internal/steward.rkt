@@ -58,9 +58,9 @@
       (let loop ((devs (get-devices)))
         (if (empty? devs)
             #f ;no device with elements to match request
-            (let ((result ((car devs) 'get element-type)))
-              (if result ;result != false means we found a valid result
-                  result
+            (let ((is ((car devs) 'get element-type)))
+              (if is ;result != false means we found a valid result
+                  ((send room (car devs) is) 'get-value)
                   (loop (cdr devs)))))))
     ;need high-order method (instruction 'instruction . args) ?
     ;ex (instruction 'set element-type value)
@@ -68,9 +68,9 @@
       (let loop ((devs (get-devices)))
         (if (empty? devs)
             #f ;no device with elements to match request
-            (let ((result ((car devs) 'set element-type value)))
+            (let ((is ((car devs) 'set element-type value)))
               (cond
-                (result ;result != false means we found a valid result
+                (is ;result != false means we found a valid result
                  ((new-action (string-append "Set "
                                              (to-string element-type)
                                              " to "
@@ -78,7 +78,7 @@
                                              " in steward \""
                                              (get-room)
                                              "\"")) 'write)
-                 result)
+                 ((send room (car devs) is) 'get-value))
                 (else (loop (cdr devs))))))))
     
     (define (get-rule-manager) rule-manager)
@@ -99,5 +99,4 @@
     (set! rule-manager (new-rule-manager dispatch))
     ;client ports
     (steward-port-map 'add! (get-room) (new-steward-ports dispatch))
-    (display room)
     dispatch))

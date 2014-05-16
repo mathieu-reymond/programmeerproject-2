@@ -1,6 +1,7 @@
 #lang r5rs
 
-(#%provide djb2-port)
+(#%provide djb2-port
+           djb2)
 
 (define port-limit 4000)
 

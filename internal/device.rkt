@@ -74,7 +74,8 @@
                        (equal? ((current 'super) 'get-type) element-type))
                   (let ((is (current 'get-value)))
                     ;send instruction-set to physical device using messenger:send
-                    ((send dispatch is) 'get-value) ;should be a RET-instruction, with response stored in value
+                    ;((send dispatch is) 'get-value) ;should be a RET-instruction, with response stored in value
+                    is
                     )
                   (loop (cdr els)))))))
     
@@ -87,7 +88,8 @@
                        (equal? ((current 'super) 'get-type) element-type))
                   (let ((is (current 'set-value value)))
                     ;send instruction-set to physical device using messenger:send
-                    ((send dispatch is) 'get-value) ;should be a RET-instruction, with response stored in value
+                    ;((send dispatch is) 'get-value) ;should be a RET-instruction, with response stored in value
+                    is
                     )
                   (loop (cdr els)))))))
     

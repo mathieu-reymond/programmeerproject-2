@@ -1,6 +1,7 @@
 #lang r5rs
 (#%require racket/tcp
-           (only racket/base let-values))
+           (only racket/base let-values)
+           (only racket/base sleep))
 
 (#%require "parser.rkt"
            "../structure/map.rkt"
@@ -31,7 +32,7 @@
 ;@param device : the device which will recieve the message
 ;@param instruction :the message that will be sent
 ;@return isntruction : the response
-(define (send device instruction)
+(define (send2 device instruction)
   (let ((ports (hardware-device/port-map 'get-ports-for-hardware-device (device 'get-serial-number))) ;the ports to communicate with the corresponding hardware-device
         (parsed-instruction (instruction-to-list instruction))) ;need to parse to send over port
     (write parsed-instruction (cdr ports)) ;send instruction over port
@@ -39,9 +40,13 @@
       (list-to-instruction response)))) ;returns response as an instruction
 
 
-(define (send2 steward-room device instruction)
+(define (send steward-room device instruction)
   (let ((ports (steward-port-map 'find steward-room))
         (parsed-instruction (instruction-to-list instruction)))
+    (newline)
+    (display steward-room) (display " : ")
+    (display parsed-instruction) (newline)
     (write (cons (device 'get-serial-number) parsed-instruction) (steward-out-port ports))
+    (flush-output (steward-out-port ports))
     (let ((response (read (steward-in-port ports))))
       (list-to-instruction response))))
