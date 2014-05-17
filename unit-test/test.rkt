@@ -9,6 +9,8 @@
 (#%require "test-steward.rkt")
 (#%require "test-hardware-device.rkt")
 (#%require "test-physical-room.rkt")
+(#%require "test-xbee-simulation.rkt")
+(#%require "test-zigbee.rkt")
 
 (test-instruction)
 (test-parser)
@@ -19,5 +21,7 @@
 (test-steward)
 (test-hardware-device)
 (test-physical-room)
+(test-xbee-simulation)
+(test-zigbee)
 
 (display "Finished testing !")

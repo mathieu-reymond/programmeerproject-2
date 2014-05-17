@@ -1,5 +1,6 @@
 #lang r5rs
 (#%require rackunit)
+(#%require (only racket/base thread))
 
 (#%require "../internal/steward.rkt")
 (#%require "../internal/device.rkt")
@@ -8,6 +9,7 @@
 (#%require "../internal/element-type.rkt")
 (#%require "../physical/physical-room.rkt")
 (#%require "../physical/hardware-device.rkt")
+(#%require "../physical/steward-server.rkt")
 (#%provide test-steward)
 
 (define room (new-physical-room "room"))
@@ -26,6 +28,8 @@
 (temp-device 'add-element temp-actuator)
 (new-hardware-device (temp-device 'get-serial-number) room)
 
+;need a server before making a steward class
+(thread (lambda() (new-steward-server "bedroom")))
 (define s (new-steward "bedroom"))
 
 (define test-steward (lambda () (test-case

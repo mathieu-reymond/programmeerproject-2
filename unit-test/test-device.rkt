@@ -6,7 +6,7 @@
 (#%require "../internal/actuator.rkt")
 (#%require "../internal/element-type.rkt")
 (#%require "../physical/physical-room.rkt")
-(#%require "../physical/hardware-device.rkt")
+(#%require "../physical/hardware-device2.rkt")
 (#%provide test-device)
 
 (define d (new-device "my-device" "my-serial-number"))

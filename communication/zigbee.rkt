@@ -120,19 +120,19 @@
 (define (execute-zigbee-string zigbee-string phys-room)
   (let* ((inst-type (substring zigbee-string 0 3))
          (inst (cond
-                 ((eq? inst-type "GET") 'get)
-                 ((eq? inst-type "SET") 'set)
+                 ((equal? inst-type "GET") 'get)
+                 ((equal? inst-type "SET") 'set)
                  (else #f)))
          (el-type (substring zigbee-string 4 7))
          (el (cond
-               ((eq? el-type "POW") 0) ;LIGHT
-               ((eq? el-type "TEM") 1) ;TEMPERATURE
+               ((equal? el-type "POW") 1) ;LIGHT
+               ((equal? el-type "TEM") 0) ;TEMPERATURE
                (else #f))))
     (if (eq? inst 'set)
         (let* ((val (substring zigbee-string 8 (string-length zigbee-string)))
                (value (cond
-                        ((eq? val "ON") 1)
-                        ((eq? val "OFF") 0)
+                        ((equal? val "ON") 1)
+                        ((equal? val "OFF") 0)
                         (else (string->number val)))))
           (phys-room inst el value))
         (phys-room inst el))))
