@@ -1,5 +1,9 @@
 #lang r5rs
 (#%require (only racket/base error))
+(#%require "../communication/xbee-simulation.rkt" ;for simulation
+           ;"../communication/xbee.rkt" ;for hardware
+           "../structure/map.rkt"
+           "../internal/element-type.rkt")
 
 (#%provide TAG_GET)
 (#%provide new-instruction-get)
@@ -9,6 +13,17 @@
 (#%provide new-instruction-list)
 (#%provide TAG_RET)
 (#%provide new-instruction-ret)
+
+(define element-type-zigbee-type-map (new-map))
+(element-type-zigbee-type-map 'add! TEMPERATURE "TEM")
+(element-type-zigbee-type-map 'add! LIGHT "POW")
+
+(define (string-upcase str)
+  (define (loop current res)
+    (if (eq? current -1) 
+        (apply string res)
+        (loop (- current 1) (cons (char-upcase (string-ref str current)) res))))
+  (loop (- (string-length str) 1) '()))
 
 ;an abstract Instruction class
 ;Implementations : InstructionGet, InstructionPut, InstructionList
@@ -32,7 +47,24 @@
   (let ((instruction (new-instruction TAG_GET element-type)))
     (define (tag) (instruction 'tag))
     (define (get-element-type) (instruction 'get 0))
-    (define (execute room) (room 'get (get-element-type)))
+    (define (execute xbee device-serial)
+      ;the message to be send to the hardware
+      (define (message)
+        (string-append (string-upcase (symbol->string (tag)))
+                       " "
+                       (element-type-zigbee-type-map 'find (get-element-type))))
+      ;find the 64bit address of chosen device
+      (define (nodes-loop current)
+        (cond
+          ((eq? '() current) #f)
+          ((equal? (list-node-id-string (car current)) device-serial)
+           (list-node-address64 (car current)))
+          (else (nodes-loop (cdr current)))))
+      ;if device is found, write message
+      (let ((address64 (nodes-loop (xbee-list-nodes))))
+        (if address64
+            (xbee-write xbee address64 (message))
+            #f)))
     
     (define (dispatch message . args)
       (case message
@@ -53,7 +85,27 @@
     (define (tag) (instruction 'tag))
     (define (get-element-type) (instruction 'get 0))
     (define (get-value) (instruction 'get 1))
-    (define (execute room) (room 'set (get-element-type) (get-value)))
+    (define (execute xbee device-serial)
+      ;the message to be send to the hardware
+      (define (message)
+        (string-append ;(string-upcase (symbol->string (tag)))
+                       "SET"
+                       " "
+                       (element-type-zigbee-type-map 'find (get-element-type))
+                       "="
+                       (number->string (get-value))))
+      ;find the 64bit address of chosen device
+      (define (nodes-loop current)
+        (cond
+          ((eq? '() current) #f)
+          ((equal? (list-node-id-string (car current)) device-serial)
+           (list-node-address64 (car current)))
+          (else (nodes-loop (cdr current)))))
+      ;if device is found, write message
+      (let ((address64 (nodes-loop (xbee-list-nodes))))
+        (if address64
+            (xbee-write xbee address64 (message))
+            #f)))
     
     (define (dispatch message . args)
       (case message

@@ -10,17 +10,15 @@
 
 (define room (new-physical-room "room"))
 (define hd1 (new-hardware-device "first device serial" room))
+(define hd1-a64 (vector 221 84 48 254 133 190 62 15))
 (define hd2 (new-hardware-device "second device serial" room))
 
-(define hd1-ports (hardware-device/port-map 'get-ports-for-hardware-device "first device serial"))
-(define hd2-ports (hardware-device/port-map 'get-ports-for-hardware-device "second device serial"))
 
-(write (instruction-to-list (new-instruction-get LIGHT)) (cdr hd1-ports))
-(write (instruction-to-list (new-instruction-put LIGHT 1)) (cdr hd2-ports))
 
 (define test-hardware-device (lambda () (test-case
                                          "TEST:hardware-device.rkt"
-                                         (check-equal? (hd1 'get-serial-number) "first device serial")
-                                         (check-equal? (read (car hd1-ports)) (instruction-to-list (new-instruction-ret 1)) "method(process-request)")
-                                         (check-equal? (read (car hd2-ports)) (instruction-to-list (new-instruction-ret #t)) "method(process-request)")
+                                         (check-equal? (hd1 'get-serial-number) "first device serial" "method(get-serial-number)")
+                                         (check-equal? hd1-a64 (hd1 'get-address64) "method(get-address64)")
+                                         (check-equal? ((hd1 'get-room) 'get-name) (room 'get-name) "method(get-room)")
+                                         (check-equal? ((hardware-device-map 'find "first device serial") 'get-name) (hd1 'get-name) "hardware-device-map")
                                          )))

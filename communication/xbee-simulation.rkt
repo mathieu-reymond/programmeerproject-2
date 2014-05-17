@@ -1,7 +1,7 @@
 #lang r5rs
 
 (#%require "zigbee.rkt"
-           "../physical/hardware-device2.rkt")
+           "../physical/hardware-device.rkt")
 
 (#%provide xbee-initialize
            xbee-discover-nodes
@@ -62,6 +62,7 @@
       ((eq? (list-node-address64 (car current)) target) (hardware-device-map 'find (list-node-id-string (car current))))
       (else (find-hardware-device (cdr current)))))
   (let ((hardware-device (find-hardware-device (xbee-list-nodes))))
+    ;(display "hardware device : ") (display hardware-device) (newline)
     (if hardware-device
         (xbee 'add-to-buffer
               (execute-zigbee-string message (hardware-device 'get-room)))
