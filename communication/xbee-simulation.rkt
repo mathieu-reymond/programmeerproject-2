@@ -65,5 +65,8 @@
     ;(display "hardware device : ") (display hardware-device) (newline)
     (if hardware-device
         (xbee 'add-to-buffer
-              (execute-zigbee-string message (hardware-device 'get-room)))
+              (new-zigbee-message zigbee-recieve-paquet
+                                  (hardware-device 'get-address64)
+                                  (vector 0 0 0) ;address16
+                                  (new-zigbee-instruction (execute-zigbee-string message (hardware-device 'get-room)))))
         #f)))

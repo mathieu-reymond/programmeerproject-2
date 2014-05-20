@@ -2,7 +2,6 @@
 (#%require (only racket/base error))
 (#%require "../communication/xbee-simulation.rkt" ;for simulation
            ;"../communication/xbee.rkt" ;for hardware
-           "../structure/map.rkt"
            "../internal/element-type.rkt")
 
 (#%provide TAG_GET)
@@ -13,10 +12,6 @@
 (#%provide new-instruction-list)
 (#%provide TAG_RET)
 (#%provide new-instruction-ret)
-
-(define element-type-zigbee-type-map (new-map))
-(element-type-zigbee-type-map 'add! TEMPERATURE "TEM")
-(element-type-zigbee-type-map 'add! LIGHT "POW")
 
 (define (string-upcase str)
   (define (loop current res)

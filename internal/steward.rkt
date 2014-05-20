@@ -3,6 +3,7 @@
            (only racket/list empty?))
 
 (#%require "device.rkt"
+           "sensor.rkt"
            "../communication/action.rkt"
            "../communication/messenger.rkt"
            "element-type.rkt"
@@ -17,13 +18,14 @@
 
 ;constructor
 ;@param room : the room in which this Steward is located
-(define (new-steward room)
+(define (new-steward room ip)
   (let ((devices '())
         (rule-manager '()))
     ;get class-name
     (define (class) Steward)
     ;get room
     (define (get-room) room)
+    (define (get-ip) ip)
     ;get devices
     (define (get-devices) devices)
     ;remove a device
@@ -88,6 +90,7 @@
       (case message
         ((class) (class))
         ((get-room) (get-room))
+        ((get-ip) (get-ip))
         ((add-device) (apply add-device args))
         ((remove-device) (apply remove-device args))
         ((get) (apply get args))

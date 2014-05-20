@@ -1,5 +1,7 @@
 #lang r5rs
 
+(#%require "../internal/element-type.rkt"
+           "../structure/map.rkt")
 (#%provide zigbee-transmit-request
            zigbee-transmit-status
            zigbee-recieve-paquet
@@ -65,7 +67,17 @@
     (to-char 0)
     (apply string (vector->list vec))))
 
-(define (zigbee-string-to-instruction zigbee-string)
+(define (split-zigbee-string zigbee-string)
+  (define (string-to-values lst)
+    (cond
+      ((eq? '() lst) #t) ;finished
+      (else
+       (set-car! lst
+                 (cond
+                   ((equal? "ON" (car lst)) 1)
+                   ((equal? "OFF" (car lst)) 0)
+                   (else (string->number (car lst)))))
+       (string-to-values (cdr lst)))))
   ;0 : 'ack, 'nack, #f
   ;1 : 'get, 'set
   ;2 : 'pow, 'tem
@@ -76,64 +88,73 @@
       (cond
         ((eq? pos 0)
          (cond
-           ((or (eq? current (string-length string))
-                (eq? #\space (string-ref string current)))
+           ((or (eq? current (string-length zigbee-string))
+                (eq? #\space (string-ref zigbee-string current)))
             (loop previous current (+ pos 1))) ;no ack/nack
-           ((eq? #\: (string-ref string current))
-            (vector-set! parsed pos (substring string previous current))
+           ((eq? #\: (string-ref zigbee-string current))
+            (vector-set! parsed pos (substring zigbee-string previous current))
             (loop (+ current 2) (+ current 2) (+ pos 1))) ;current + 2 because skip ": "
            (else (loop previous (+ current 1) pos))))
         ((eq? pos 1)
          (cond
-           ((eq? current (string-length string))
-            (vector-set! parsed pos (substring string previous current))
+           ((eq? current (string-length zigbee-string))
+            (vector-set! parsed pos (substring zigbee-string previous current))
             (loop current current (vector-length parsed))) ;finished string
-           ((eq? (string-ref string current) #\space)
-            (vector-set! parsed pos (substring string previous current))
+           ((eq? (string-ref zigbee-string current) #\space)
+            (vector-set! parsed pos (substring zigbee-string previous current))
             (loop (+ current 1) (+ current 1) (+ pos 1))) ;current + 1 because skip " "
            (else
             (loop previous (+ current 1) pos))))
         ((eq? pos 2)
          (cond
-           ((eq? current (string-length string))
-            (vector-set! parsed pos (substring string previous current))
+           ((eq? current (string-length zigbee-string))
+            (vector-set! parsed pos (substring zigbee-string previous current))
             (loop current current (vector-length parsed))) ;finished string
-           ((eq? (string-ref string current) #\=)
-            (vector-set! parsed pos (substring string previous current))
+           ((eq? (string-ref zigbee-string current) #\=)
+            (vector-set! parsed pos (substring zigbee-string previous current))
             (loop (+ current 1) (+ current 1) (+ pos 1))) ;current + 1 because skip "="
            (else
             (loop previous (+ current 1) pos))))
         ((eq? pos 3)
          (cond
-           ((eq? current (string-length string))
-            (vector-set! parsed pos (cons (substring string previous current) (vector-ref parsed pos)))
+           ((eq? current (string-length zigbee-string))
+            (vector-set! parsed pos (cons (substring zigbee-string previous current) (vector-ref parsed pos)))
             (loop current current (vector-length parsed))) ;finished string
-           ((eq? (string-ref string current) #\,)
-            (vector-set! parsed pos (cons (substring string previous current) (vector-ref parsed pos)))
+           ((eq? (string-ref zigbee-string current) #\,)
+            (vector-set! parsed pos (cons (substring zigbee-string previous current) (vector-ref parsed pos)))
             (loop (+ current 1) (+ current 1) pos)) ;current + 1 because skip ","
            (else (loop previous (+ current 1) pos))))
         (else ;finished string
+         (string-to-values (vector-ref parsed 3)) ;convert in readable values
          parsed)))
     (loop 0 0 0)))
 
 ;used for simulation only
 (define (execute-zigbee-string zigbee-string phys-room)
-  (let* ((inst-type (substring zigbee-string 0 3))
-         (inst (cond
-                 ((equal? inst-type "GET") 'get)
-                 ((equal? inst-type "SET") 'set)
-                 (else #f)))
-         (el-type (substring zigbee-string 4 7))
-         (el (cond
-               ((equal? el-type "POW") 1) ;LIGHT
-               ((equal? el-type "TEM") 0) ;TEMPERATURE
-               (else #f))))
-    (if (eq? inst 'set)
-        (let* ((val (substring zigbee-string 8 (string-length zigbee-string)))
-               (value (cond
-                        ((equal? val "ON") 1)
-                        ((equal? val "OFF") 0)
-                        (else (string->number val)))))
-          (phys-room inst el value))
-        (phys-room inst el))))
+  (define (find-key-for-element element map)
+    (define (loop keys)
+      (cond
+        ((eq? keys '()) #f) ;no such element in map
+        ((equal? (map 'find (car keys)) element)
+         (car keys))
+        (else (loop (cdr keys)))))
+    (loop (map 'get-keys)))
+  (let* ((split (split-zigbee-string zigbee-string))
+         (el (find-key-for-element (vector-ref split 2) element-type-zigbee-type-map)))
+    (cond
+      ((equal? (vector-ref split 1) "SET")
+       (string-append
+        (if (phys-room 'set el (car (vector-ref split 3)))
+            "ACK: "
+            "NACK: ")
+        zigbee-string))
+      (else
+       (string-append (element-type-zigbee-type-map 'find el)
+                      "="
+                      (let ((val (phys-room 'get el)))
+                        (if (eq? el LIGHT)
+                            (if (equal? val 1)
+                                "ON"
+                                "OFF")
+                            (number->string val))))))))
 

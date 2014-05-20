@@ -29,5 +29,5 @@
                                (check-equal? (zigbee-instruction-to-zigbee-string zigbee-instruction)
                                              zigbee-string
                                              "method(zigbee-instruction-to-zigbee-string)")
-                               (check-equal? (execute-zigbee-string zigbee-string room) tem "method(execute-zigbee-string)")
+                               (check-equal? (execute-zigbee-string zigbee-string room) "TEM=20" "method(execute-zigbee-string)")
                                )))

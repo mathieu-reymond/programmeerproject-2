@@ -27,7 +27,8 @@
               (begin
                 (xbee-tick xbee) ;flush buffer
                 (let ((frame (xbee-read-frame xbee))) ;read answer
-                  (instruction-to-list (new-instruction-ret frame)) ;temp, should be a bytevector
+                  (display frame) (newline)
+                  (instruction-to-list (new-instruction-ret 0)) ;temp, should be a bytevector
                   ))
               (instruction-to-list (new-instruction-ret #f))))) ;something went wrong (message lost?), should return NACK
       (define (loop)

@@ -1,9 +1,10 @@
 #lang r5rs
-
-(#%provide TEMPERATURE)
-(#%provide LIGHT)
-(#%provide for-each-element-type)
-(#%provide to-string)
+(#%require  "../structure/map.rkt")
+(#%provide TEMPERATURE
+           LIGHT
+           element-type-zigbee-type-map
+           for-each-element-type
+           to-string)
 
 ;ElementType is an Enum Class representing all different types the element can have (temperature, light...)
 
@@ -18,3 +19,7 @@
   (cond
     ((= element-type TEMPERATURE) "Temperature")
     ((= element-type LIGHT) "Light")))
+
+(define element-type-zigbee-type-map (new-map))
+(element-type-zigbee-type-map 'add! TEMPERATURE "TEM")
+(element-type-zigbee-type-map 'add! LIGHT "POW")

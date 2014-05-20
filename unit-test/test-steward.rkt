@@ -30,7 +30,7 @@
 
 ;need a server before making a steward class
 (thread (lambda() (new-steward-server "bedroom")))
-(define s (new-steward "bedroom"))
+(define s (new-steward "bedroom" "localhost"))
 
 (define test-steward (lambda () (test-case
                                 "TEST:steward.rkt"

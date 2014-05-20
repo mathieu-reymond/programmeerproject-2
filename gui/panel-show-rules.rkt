@@ -35,7 +35,9 @@
                                        (loop (cons ((mcar curr) 'get-room) res) (mcdr curr))))]
                         [callback stewards-callback]))
     (set! rules  (new vertical-panel% [parent panel]))
-    (stewards-callback stewards 'initialize)
+    (if (eq? '() (central-unit 'get-stewards))
+        (new message% [parent panel] [label "No stewards"])
+        (stewards-callback stewards 'initialize))
     panel))
 
 

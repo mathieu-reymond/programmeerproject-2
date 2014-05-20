@@ -10,7 +10,7 @@
 (define xbee (xbee-initialize "/dev/ttyUSB0" 9600))
 (define room (new-physical-room "room"))
 (define hd1 (new-hardware-device "first device serial" room))
-(define address16 (vector 1 2 3)) ;temp
+(define address16 (vector 0 0 0)) ;temp
 
 ;test methods
 (define ln (map (lambda(key) (list key ((hardware-device-map 'find key) 'get-address64))) (hardware-device-map 'get-keys)))

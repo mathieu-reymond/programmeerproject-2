@@ -56,7 +56,9 @@
       (central-unit 'for-each-steward (lambda(s) (if (not steward)
                                                      (set! steward s)
                                                      'else)))
-      (panel-steward panel steward))
+      (if steward
+          (panel-steward panel steward)
+          #f))
     
     panel))
 
@@ -142,6 +144,7 @@
 (define (panel-create-steward prnt central-unit)
   (let* ((panel (new vertical-panel% [parent prnt]))
          (text-field-room (new text-field% [parent panel] [label "Steward Room"]))
+         (text-field-ip (new text-field% [parent panel] [label "Steward IP"]))
          (list-device (list-box-device panel)))
     (define (selected-devices)
       (let ((list '()))
@@ -151,7 +154,8 @@
       (if (central-unit 'get-steward (send text-field-room get-value))
           #f ;display message : already a steward in this room
           (let ((dialog-serial (dialog-serial-numbers panel 
-                                                      (new-steward (send text-field-room get-value)) 
+                                                      (new-steward (send text-field-room get-value)
+                                                                   (send text-field-ip get-value)) 
                                                       (selected-devices)
                                                       central-unit)))
             (send dialog-serial show #t))))
@@ -159,10 +163,11 @@
     panel))
 
 (define (panel-settings-steward prnt central-unit)
-  (let* ((panel (new horizontal-panel% [parent prnt]))
-         ;(list-steward (panel-steward-list panel (lambda(b e) void) central-unit))
-         (list-steward (panel-modify-steward panel central-unit))
-         (new-steward (panel-create-steward panel central-unit)))
+  (let* ((panel (new horizontal-panel% [parent prnt])))
+    ;(list-steward (panel-steward-list panel (lambda(b e) void) central-unit))
+    (unless (eq? '() (central-unit 'get-stewards)) ;modify existing stewards
+      (panel-modify-steward panel central-unit)) ;add a new steward
+    (panel-create-steward panel central-unit)
     panel))
 
 (define (panel-main prnt central-unit)

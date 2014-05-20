@@ -17,7 +17,7 @@
 (define steward-in-port car)
 (define steward-out-port cdr)
 (define (new-steward-ports steward)
-  (let-values (((in out) (tcp-connect "localhost"
+  (let-values (((in out) (tcp-connect (steward 'get-ip) ;test with "localhost", Pi address : 192.9.200.133
                                       (djb2-port (steward 'get-room)))))
     (cons in out)))
 

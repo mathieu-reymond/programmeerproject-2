@@ -26,6 +26,7 @@
   (define (create-tables)
     (let ((connection (connect-to-db)))
       (query-exec connection (string-append "CREATE TABLE Stewards (room char(20), "
+                                            "ip char(20) NOT NULL DEFAULT 'localhost', "
                                             "PRIMARY KEY (room))"))
       (query-exec connection (string-append "CREATE TABLE Devices (serial char(20), "
                                             "name char(20), "
@@ -160,7 +161,8 @@
   (define (add-steward steward)
     (let ((connection (connect-to-db)))
       (query-exec connection (string-append "INSERT INTO Stewards VALUES ('"
-                                            (steward 'get-room)
+                                            (steward 'get-room) "', '"
+                                            (steward 'get-ip)
                                             "')"))
       (for-each (lambda (device) (add-device device steward)) (steward 'get-devices))))
   
@@ -221,7 +223,7 @@
           ((find-devices (vector-ref ds 0)) 'add-element (new-actuator (vector-ref ds 1))))
         (rkt:for-each update-device res))
       (let ((res (query-rows connection "SELECT * FROM Stewards")))
-        (rkt:for-each (lambda (s) (set! stewards (cons (new-steward (vector-ref s 0)) stewards))) res))
+        (rkt:for-each (lambda (s) (set! stewards (cons (new-steward (vector-ref s 0) (vector-ref s 1)) stewards))) res))
       (let ((res (query-rows connection "SELECT * FROM Devices")))
         (rkt:for-each (lambda(d) ((find-stewards (vector-ref d 2)) 'add-device (new-device (vector-ref d 1) (vector-ref d 0)))) res))
       (for-each (lambda (s)
