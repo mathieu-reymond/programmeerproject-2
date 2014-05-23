@@ -29,12 +29,21 @@
       (map (lambda (el) (cdr el)) structure)) 
     (define (get-keys)
       (map (lambda (el) (car el)) structure))
+    (define (key element)
+      (define (loop keys)
+        (cond
+          ((eq? keys '()) #f) ;no such element in map
+          ((equal? (find (car keys)) element)
+           (car keys))
+          (else (loop (cdr keys)))))
+      (loop (get-keys)))
     
     (define (dispatch message . args)
       (case message
         ((add!) (apply add! args))
         ((remove!) (apply remove! args))
         ((find) (apply find args))
+        ((key) (apply key args))
         ((get-elements) (get-elements))
         ((get-keys) (get-keys))
         (else (error "Error : Map.class : unknown method : " message))))

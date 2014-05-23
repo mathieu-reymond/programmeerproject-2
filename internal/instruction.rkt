@@ -1,6 +1,7 @@
 #lang r5rs
 (#%require (only racket/base error))
-(#%require "../communication/xbee-simulation.rkt" ;for simulation
+(#%require "../communication/zigbee.rkt"
+           "../communication/xbee-simulation.rkt" ;for simulation
            ;"../communication/xbee.rkt" ;for hardware
            "../internal/element-type.rkt")
 
@@ -47,7 +48,8 @@
       (define (message)
         (string-append (string-upcase (symbol->string (tag)))
                        " "
-                       (element-type-zigbee-type-map 'find (get-element-type))))
+                       (element-type-zigbee-type-map 'find (get-element-type))
+                       "\n"))
       ;find the 64bit address of chosen device
       (define (nodes-loop current)
         (cond
@@ -57,15 +59,23 @@
           (else (nodes-loop (cdr current)))))
       ;if device is found, write message
       (let ((address64 (nodes-loop (xbee-list-nodes))))
+        (display "WRITE TO : ") (display address64) (newline)
         (if address64
-            (xbee-write xbee address64 (message))
+            (xbee-write xbee address64 ((new-zigbee-instruction (message)) 'to-vector))
             #f)))
+    
+    (define (value-of zigbee-instruction)
+      (let ((values (zigbee-instruction 'values (get-element-type))))
+        (if (equal? values '())
+            #f
+            (car values))))
     
     (define (dispatch message . args)
       (case message
         ((tag) (tag))
         ((get-element-type) (get-element-type))
         ((execute) (apply execute args))
+        ((value-of) (apply value-of args))
         (else (error "Error : InstructionGet.class : unknown method : " message))))
     
     dispatch))
@@ -84,11 +94,16 @@
       ;the message to be send to the hardware
       (define (message)
         (string-append ;(string-upcase (symbol->string (tag)))
-                       "SET"
-                       " "
-                       (element-type-zigbee-type-map 'find (get-element-type))
-                       "="
-                       (number->string (get-value))))
+         "SET"
+         " "
+         (element-type-zigbee-type-map 'find (get-element-type))
+         "="
+         (if (equal? LIGHT (get-element-type))
+             (if (equal? (get-value) 0)
+                 "OFF"
+                 "ON")
+             (number->string (get-value)))
+         "\n"))
       ;find the 64bit address of chosen device
       (define (nodes-loop current)
         (cond
@@ -98,9 +113,13 @@
           (else (nodes-loop (cdr current)))))
       ;if device is found, write message
       (let ((address64 (nodes-loop (xbee-list-nodes))))
+        (display "WRITE TO : ") (display address64) (newline)
         (if address64
-            (xbee-write xbee address64 (message))
+            (xbee-write xbee address64 ((new-zigbee-instruction (message)) 'to-vector))
             #f)))
+    
+    (define (value-of zigbee-instruction)
+      (zigbee-instruction 'acknowledged?))
     
     (define (dispatch message . args)
       (case message
@@ -108,6 +127,7 @@
         ((get-element-type) (get-element-type))
         ((get-value) (get-value))
         ((execute) (apply execute args))
+        ((value-of) (apply value-of args))
         (else (error "Error : InstructionPut.class : unknown method : " message))))
     
     dispatch))

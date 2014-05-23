@@ -31,19 +31,16 @@
 (send (main-frame central-unit 400 300) show #t)
 
 ;;record data
-;(define (record-data steward)
-;  (let ((time (+ (current-seconds) 3)))
-;    (define (loop)
-;      (cond
-;        ((equal? time (current-seconds))
-;         (for-each-element-type (lambda(e)
-;                                  (let ((res (steward 'get e)))
-;                                    (if res
-;                                        (manager 'add-time-value steward e (current-seconds) res)
-;                                        'no-sensor-for-element-type))))
-;         (set! time (+ (current-seconds) 3))
-;         (loop))
-;        (else (loop))))
-;    (loop)))
-;;start a thread for each steward
-;(central-unit 'for-each-steward (lambda(s) (thread (lambda() (record-data s)))))
+(define (record-data)
+  (define (record-steward steward)
+    (for-each-element-type (lambda(e)
+                             (let ((res (steward 'get e)))
+                               (if res
+                                   (manager 'add-time-value steward e (current-seconds) res)
+                                   'no-sensor-for-element-type)))))
+  (let ((record? (equal? (modulo (current-seconds) 10) 0))) ;every 10 seconds
+    (if record?
+        (central-unit 'for-each-steward (lambda(s) (record-steward s)))
+        'wait))
+  (record-data))
+(thread record-data)

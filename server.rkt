@@ -16,6 +16,6 @@
 (newline)
 
 ;simulate devices in room
-(define room (new-physical-room room-name))
-(new-hardware-device "123456789" room)
+;(define room (new-physical-room room-name))
+;(new-hardware-device "123456789" room)
 (new-steward-server room-name)

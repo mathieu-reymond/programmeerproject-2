@@ -3,7 +3,7 @@
 (#%require "zigbee.rkt"
            "../physical/hardware-device.rkt")
 
-(#%provide xbee-initialize
+(#%provide xbee-initialise
            xbee-discover-nodes
            xbee-list-nodes
            xbee-tick
@@ -19,7 +19,7 @@
 (define list-node-id-string car)
 (define list-node-address64 cadr)
 
-(define (xbee-initialize port rate)
+(define (xbee-initialise port rate)
   (let ((buffer '())
         (frames '()))
     (define (add-to-buffer message) (set! buffer (cons message buffer)))
@@ -28,7 +28,7 @@
       (set! buffer '()))
     (define (read-frame)
       (if (eq? '() frames)
-          #f
+          (make-vector 0) ;when nothing in frames, give the empty vector
           (let ((frame (car frames)))
             (set! frames (cdr frames))
             frame)))
@@ -64,9 +64,22 @@
   (let ((hardware-device (find-hardware-device (xbee-list-nodes))))
     ;(display "hardware device : ") (display hardware-device) (newline)
     (if hardware-device
-        (xbee 'add-to-buffer
-              (new-zigbee-message zigbee-recieve-paquet
-                                  (hardware-device 'get-address64)
-                                  (vector 0 0 0) ;address16
-                                  (new-zigbee-instruction (execute-zigbee-string message (hardware-device 'get-room)))))
+        (begin
+          (xbee 'add-to-buffer
+                ((new-zigbee-message zigbee-transmit-status
+                                     1 ;frame-id
+                                     (vector 0 0) ;address16
+                                     0 ;retry count
+                                     0 ;delivered
+                                     0) ;discovery
+                 'to-vector))
+          (xbee 'add-to-buffer
+                ((new-zigbee-message zigbee-recieve-paquet
+                                     (hardware-device 'get-address64)
+                                     (vector 0 0) ;address16
+                                     0 ;option
+                                     (let ((zinst (new-zigbee-instruction (zigbee-vector-to-zigbee-string message))))
+                                       ((new-zigbee-instruction (execute-zigbee-instruction zinst (hardware-device 'get-room)))
+                                        'to-vector)))
+                 'to-vector)))
         #f)))

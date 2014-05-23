@@ -9,7 +9,18 @@
  xbee-discover-nodes
  xbee-list-nodes
  xbee-write
- xbee-write-16)
+ xbee-write-16
+ list-node-id-string
+ list-node-address64)
+
+(define list-node-id-string car)
+(define list-node-address64 cadr)
+(define (cons-to-mcons lst)
+  (let loop ((res '())
+             (curr lst))
+    (if (eq? '() curr)
+        res
+        (loop (mcons (car curr) res) (cdr curr)))))
 
 ; We need the FFI libraries.
 (require ffi/unsafe
@@ -56,7 +67,7 @@
 
 (define (xbee-list-nodes)
   "Returns an association list of ( <NID string> <addr64 bytevector> ) elements"
-  (xbee_disc_discovered_nodes))
+  (cons-to-mcons (xbee_disc_discovered_nodes)))
 
 (define (xbee-read-frame xbee)
   "Returns a bytevector that contains a frame message"
