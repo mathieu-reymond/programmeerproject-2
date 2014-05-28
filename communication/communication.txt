@@ -1,0 +1,12 @@
+;b===h* domotica/communication
+; NAME
+;  communication
+; DESCRIPTION
+;  Laat toe om boodschappen te sturen naar de hardware.
+;  Dit module bevat het nodige om te communiceren tussen de steward en de hardware 
+;  door het zenden en opvangen van instructions.
+;  Berichten kunnen verzonden worden via de messenger,
+;  instructions die verzonden worden kunnen geparsed worden via de parser,
+;  het zigbee protocol kan geinterpreteerd worden door de zigbee-messages,
+;  en er kan naar de xbee geschreven worden (ook gesimuleerd) vie xbee(-simulation).rkt.
+;e===

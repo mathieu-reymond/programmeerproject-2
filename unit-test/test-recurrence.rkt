@@ -19,22 +19,22 @@
 (define end-weekly-wrong (seconds->date (find-seconds 0 30 11 6 2 2014)))
 
 
-(define once (new-once until))
-(define daily (new-daily until))
-(define weekly (new-weekly until))
+(define once (new-recurrence "once" until))
+(define daily (new-recurrence "daily" until))
+(define weekly (new-recurrence "weekly" until))
 
 (define test-recurrence (lambda () (test-case
                                     "TEST:recurrence.rkt"
-                                    (check-equal? ((once 'next start-date end-date) 'get-begin-date)
+                                    (check-equal? ((once 'next start-date) 'get-date)
                                                   start-date
                                                   "method(once)")
-                                    (check-equal? ((daily 'next start-date end-date) 'get-begin-date)
+                                    (check-equal? ((daily 'next start-date) 'get-date)
                                                   (seconds->date (find-seconds 0 30 10 31 1 2014)) 
                                                   "method(daily)")
-                                    (check-equal? ((weekly 'next start-date end-date) 'get-begin-date)
+                                    (check-equal? ((weekly 'next start-date) 'get-date)
                                                   start-weekly-wrong
                                                   "method(daily) before until")
-                                    (check-equal? (weekly 'next start-weekly-wrong end-weekly-wrong)
+                                    (check-equal? (weekly 'next start-weekly-wrong)
                                                   #f
                                                   "method(daily) before until")
                                     )))

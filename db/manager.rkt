@@ -19,7 +19,21 @@
 
 (#%provide new-db-manager)
 
+;b===c* db/db-manager
+; NAME
+;  db-manager
+; DESCRIPTION
+;  Een manager die toelaat om gemakkelijk te interageren met de gegevensbank.
+;  De manager slaagt de verschillende devices, stewards en resultaten van instructions op.
+;e===
+;b===mi db/initialize
+; NAME
+;  initialize
+; DESCRIPTION
+;  Maakt een nieuwe database aan met de nodige tables.
+; SYNOPSIS
 (define (initialize)
+; SOURCE
   (define (connect-to-db)
     (sqlite3-connect #:database "domotica.db"
                      #:mode 'create))
@@ -73,12 +87,34 @@
   
   (create-tables)
   (fill-ElementTypes))
+;e===
 
+;b===o* db-manager/new-db-manager
+; NAME
+;  new-db-manager
+; DESCRIPTION
+;  maakt een nieuwe db-manager aan gebaseerd op
+;  de database die op db-path ligt.
+; PARAMETERS
+;  * db-path - het pad van de gegevensbank.
+; SYNOPSIS
 (define (new-db-manager db-path)
+;e===
   (define (connect-to-db)
     (sqlite3-connect #:database db-path
                      #:mode 'read/write))
+  ;b===m* db-manager/add-device-type
+  ; NAME
+  ;  add-device-type
+  ; DESCRIPTION
+  ;  Voeg een nieuw device-type toe aan de database.
+  ; PARAMETERS
+  ;  * device - een device van het type die toegevoegd moet worden.
+  ; RETURN VALUE
+  ;  #<void>
+  ; SYNOPSIS
   (define (add-device-type device)
+  ; SOURCE
     (let ((connection (connect-to-db)))
       (define (insert-element element)
         (cond
@@ -103,8 +139,20 @@
                                                      (number->string ((element 'super) 'get-type))
                                                      ")"))))))
       (for-each insert-element (device 'get-elements))))
-  
+  ;e===
+  ;b===m* db-manager/add-device
+  ; NAME
+  ;  add-device
+  ; DESCRIPTION
+  ;  Voeg een device toe aan de gegevensbank.
+  ; PARAMETERS
+  ;  * device - de device die toegevoegd moet worden.
+  ;  * steward - de steward die het device beheerst.
+  ; RETURN VALUE
+  ;  #<void>
+  ; SYNOPSIS
   (define (add-device device steward)
+  ; SOURCE
     (add-device-type device)
     (let ((connection (connect-to-db)))
       (if (query-maybe-value connection (string-append "SELECT serial FROM Devices WHERE serial = '"
@@ -116,8 +164,19 @@
                                                 (device 'get-serial-number) "', '"
                                                 (device 'get-name) "', '"
                                                 (steward 'get-room) "')")))))
-  
+  ;e===
+  ;b===m* db-manager/remove-device
+  ; NAME
+  ;  remove-device
+  ; DESCRIPTION
+  ;  Verwijdert een device van de gegevensbank.
+  ; PARAMETERS
+  ;  * device - de device die verwijdert moet worden.
+  ; RETURN VALUE
+  ;  #<void>
+  ; SYNOPSIS
   (define (remove-device device)
+  ; SOURCE
     (let ((connection (connect-to-db)))
       ;if test necessary ?
       (if (query-maybe-value connection (string-append "SELECT serial FROM Devices WHERE serial = '"
@@ -125,8 +184,19 @@
           (query-exec connection (string-append "DELETE FROM Devices WHERE serial = '"
                                                 (device 'get-serial-number) "'"))
           #f)))
-  
+  ;e===
+  ;b===m* db-manager/get-rules
+  ; NAME
+  ;  get-rules
+  ; DESCRIPTION
+  ;  Geeft een list terug met alle rules die op een steward toegepast zijn.
+  ; PARAMETERS
+  ;  * steward - de steward van wie we de rules willen krijgen
+  ; RETURN VALUE
+  ;  * list - een lijst met de rules van de steward
+  ; SYNOPSIS
   (define (get-rules steward)
+  ; SOURCE
     (let* ((connection (connect-to-db))
            (res '()))
       (rkt:for-each (lambda(e) (set! res (cons (new-rule (vector-ref e 2)
@@ -138,13 +208,23 @@
                     (query-rows connection (string-append "SELECT * FROM Rules WHERE room ='"
                                                           (steward 'get-room) "'")))
       res))
-  
+  ;e===
   (define (delete-rules steward)
     (let ((connection (connect-to-db)))
       (query-exec connection (string-append "DELETE FROM Rules WHERE room = '"
                                             (steward 'get-room) "'"))))
-  
+  ;b===m* db-manager/update-rules
+  ; NAME
+  ;  update-rules
+  ; DESCRIPTION
+  ;  Update de rules van een steward in de database.
+  ; PARAMETERS
+  ;  * steward - de steward van wie we de rules willen updaten.
+  ; RETURN VALUE
+  ;  #<void>
+  ; SYNOPSIS
   (define (update-rules steward)
+  ; SOURCE
     (let ((connection (connect-to-db))
           (rule-manager (steward 'get-rule-manager)))
       (delete-rules steward)
@@ -157,31 +237,81 @@
                                                         (((rule 'get-interval) 'get-recurrence) 'get-type) "', "
                                                         (number->string (date->seconds (((rule 'get-interval) 'get-recurrence) 'get-end))) ")")))
                 (rule-manager 'get-rules))))
-  
+  ;e===
+  ;b===m* db-manager/add-steward
+  ; NAME
+  ;  add-steward
+  ; DESCRIPTION
+  ;  Voeg een steward toe aan de gegevensbank.
+  ; PARAMETERS
+  ;  * steward - de steward die toegevoegd moet worden.
+  ; RETURN VALUE
+  ;  #<void>
+  ; SYNOPSIS
   (define (add-steward steward)
+  ; SOURCE
     (let ((connection (connect-to-db)))
       (query-exec connection (string-append "INSERT INTO Stewards VALUES ('"
                                             (steward 'get-room) "', '"
                                             (steward 'get-ip)
                                             "')"))
       (for-each (lambda (device) (add-device device steward)) (steward 'get-devices))))
-  
+  ;e===
+  ;b=== db-manager/remove-steward
+  ; NAME
+  ;  remove-steward
+  ; DESCRIPTION
+  ;  Verwijder een steward van de gegevensbank.
+  ; PARAMETERS
+  ;  * steward - de steward die verwijdert moet worden.
+  ; RETURN VALUE
+  ;  #<void>
+  ; SYNOPSIS
   (define (remove-steward steward)
+  ; SOURCE
     (let ((connection (connect-to-db)))
       (delete-rules steward)
       (query-exec connection (string-append "DELETE FROM Stewards WHERE room = '"
                                             (steward 'get-room) "'"))
       (for-each (lambda (device) (remove-device device)) (steward 'get-devices))))
-  
+  ;e===
+  ;b===m* db-manager/add-time-value
+  ; NAME
+  ;  add-time-value
+  ; DESCRIPTION
+  ;  Slaagt de waarde van een bepaalde element-type in een bepaalde kamer op een bepaald tijdstip op
+  ;  in de gegevensbank.
+  ; PARAMETERS
+  ;  * steward - de steward die het element-type gemeten heeft.
+  ;  * element - het element-type die gemeten werd.
+  ;  * time - het tijdstip (in seconden) van de meting.
+  ;  * value - de waarde van de meting.
+  ; RETURN VALUE
+  ;  #<void>
+  ; SYNOPSIS
   (define (add-time-value steward element time value)
+  ; SOURCE
     (let ((connection (connect-to-db)))
       (query-exec connection (string-append "INSERT INTO ElementTypeValues VALUES ('"
                                             (steward 'get-room) "', "
                                             (number->string element) ", "
                                             (number->string time) ", "
                                             (number->string value) ")"))))
-  
+  ;e===
+  ;b===* db-manager/get-steward-time-value
+  ; NAME
+  ;  get-steward-time-value
+  ; DESCRIPTION
+  ;  Geeft een map terug met de metingen van de element-types in een kamer.
+  ;
+  ;  De map opstelling : (element-type >< (list (vector time value) ...))
+  ; PARAMETERS
+  ;  steward - de steward van de gevraagde kamer.
+  ; RETURN VALUE
+  ;  map - een map met de metingen
+  ; SYNOPSIS
   (define (get-steward-time-value steward)
+  ; SOURCE
     (let* ((connection (connect-to-db))
            (vals (new-map)))
       (define (res-for-element element)
@@ -191,10 +321,20 @@
                                                          "ORDER BY time ASC"))))
           (vals 'add! element res)))
       (for-each-element-type res-for-element)
-      vals))  
+      vals))
+  ;e===
   
-  
+  ;b===m* db-manager/restore-state
+  ; NAME
+  ;  restore-state
+  ; DESCRIPTION
+  ;  Geeft een central-unit terug met de huidige stand van de gegevensbank.
+  ;  De central-unit beheerst dus alle verschillende opgeslagen stewards en opgeslagen devices.
+  ; RETURN VALUE
+  ;  central-unit - een central-unit met de huidige stand van de database.
+  ; SYNOPSIS
   (define (restore-state)
+  ; SOURCE
     (let ((connection (connect-to-db))
           (stewards '())
           (devices '())
@@ -232,6 +372,7 @@
                     (for-each (lambda(r) (rule-manager 'add-rule r)) rules))) stewards)
       (for-each (lambda (s) (central-unit 'add-steward s)) stewards)
       central-unit))
+  ;e===
   
   (define (dispatch message . args)
     (case message

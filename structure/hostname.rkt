@@ -116,6 +116,14 @@
                        m)))
           (else (reverse reverse-results)))))
 
+;b===m* structure/get-ipv4-addrs
+; NAME
+;  get-ipv4-addrs
+; DESCRIPTION
+;  Geeft het ipv4 adres van een machine.
+;
+;  Zie http://www.neilvandyke.org/racket-hostname/
+;e===
 (provide get-ipv4-addrs)
 (define (get-ipv4-addrs #:normal?    (normal?    #t)
                         #:localhost? (localhost? #f))

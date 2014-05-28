@@ -1,0 +1,16 @@
+;b===h* domotica/db
+; NAME
+;  db
+; DESCRIPTION
+;  Beheerst de gegevensbank van het systeem. 
+;  Elke steward en device die door de user aangemaakt wordt wordt opgeslagen in de database.
+;  De gegevensbank :
+;  * De Stewards table laat toe om stewards op te slaan.
+;  * De Devices table laat toe om devices op te slaan.
+;  * De ElementTypes table toont welke types meetbaar en/of beinvloedbaar kunnen zijn door sensoren en actuatoren.
+;  * De DeviceSensors table toont, voor elk type device (devices zijn van hetzelfde type wanneer ze dezelfde naam hebben), welke sensoren het heeft.
+;  * De DeviceActuators table toont, vool elk type device (devices zijn van hetzelfde type wanneer ze dezelfde naam hebben), welke actuatoren het heeft.
+;  * De ElementTypeValues table toont de waarde van een bepaalde element-type in een bepaalde kamer op een bepaalde tijd.
+;
+;  image:database.png
+;e===

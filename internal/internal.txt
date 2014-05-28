@@ -1,0 +1,6 @@
+;b===h* domotica/internal
+; NAME
+;  internal
+; DESCRIPTION
+;  Het internal module bevat de kern van het domotica systeem. De central-unit houdt de verschillende stewards bij, die instructies kunnen zenden aan de hardware, zoals het aanpassen van de licht-intensiteit of het opvragen van de temperatuur van de kamer.
+;e===

@@ -11,25 +11,94 @@
 (#%provide Steward)
 (#%provide new-steward)
 
-;Steward is located in a specific room and has multiple Devices.
+;b===c* internal/steward
+; NAME
+;  steward
+; DESCRIPTION
+;  Een steward bevindt zich in een kamer en heeft een uniek ip adres.
+;  Elke kamer bevat maximum een steward.
+;  Een steward beheerst een aantal devices en
+;  kan instructions zenden naar de hardware door gebruik te maken van een messenger.
+;  Een steward kan bepaalde rules hebben die automatisch instructions zenden wanneer de rule waar is.
+;e===
 
 ;class name
 (define Steward 'steward)
 
-;constructor
-;@param room : the room in which this Steward is located
+;b===o* steward/new-steward
+; NAME
+;  new-steward
+; DESCRIPTION
+;  Maakt een nieuwe steward aan.
+; PARAMETERS
+;  * room - de naam van de kamer waar de steward zich bevindt. Elke steward is in een verschillende kamer.
+;  * ip - het ip adres van deze steward.
+; SYNOPSIS
 (define (new-steward room ip)
+;e===
   (let ((devices '())
         (rule-manager '()))
-    ;get class-name
-    (define (class) Steward)
-    ;get room
-    (define (get-room) room)
-    (define (get-ip) ip)
-    ;get devices
-    (define (get-devices) devices)
-    ;remove a device
+    ;b===m* steward/class
+    ; NAME
+    ;  class
+    ; DESCRIPTION
+    ;  Geeft de classe terug van dit object.
+    ; RETURN VALUE
+    ;  symbol - de naam van de classe
+    ; SYNOPSIS
+    (define (class)
+    ; SOURCE
+      Steward)
+    ;e===
+    ;b===m* steward/get-room
+    ; NAME
+    ;  get-room
+    ; DESCRIPTION
+    ;  Geeft de naam van de kamer waar de steward zich bevindt terug.
+    ; RETURN VALUE
+    ;  string - de naam van de kamer.
+    ; SYNOPSIS
+    (define (get-room)
+    ; SOURCE
+      room)
+    ;e===
+    ;b===m* steward/get-ip
+    ; NAME
+    ;  get-ip
+    ; DESCRIPTION
+    ;  Geeft het ip adres van deze steward terug.
+    ; RETURN VALUE
+    ;  string - het ip adres van deze steward.
+    ; SYNOPSIS
+    (define (get-ip) 
+    ; SOURCE
+      ip)
+    ;e===
+    ;b===m* steward/get-devices
+    ; NAME
+    ;  get-devices
+    ; DESCRIPTION
+    ;  Een lijst van de devices die deze steward beheert.
+    ; RETURN VALUE
+    ;  list - de lijst met de beheerste devices.
+    ; SYNOPSIS
+    (define (get-devices) 
+    ; SOURCE
+      devices)
+    ;e===
+    ;b===m* steward/remove-device
+    ; NAME
+    ;  remove-device
+    ; DESCRIPTION
+    ;  Verwijdert een bepaalde device van de beheerste devices.
+    ; PARAMETERS
+    ;  * device - de device die verwijdert moet worden.
+    ; RETURN VALUE
+    ;  #<void> - als de device verwijderd werd.
+    ;  #f - wanneer de device niet door deze steward beheerst is.
+    ; SYNOPSIS
     (define (remove-device device)
+    ; SOURCE
       (define (loop previous current)
         (cond
           ((eq? '() current) #f) ;not in list
@@ -45,18 +114,40 @@
                                   "\" from steward \""
                                   (get-room)
                                   "\"")) 'write))
-    ;add a device to this steward
+    ;e===
+    ;b===m* steward/add-device
+    ; NAME
+    ;  add-device
+    ; DESCRIPTION
+    ;  Voeg een device toe aan deze steward.
+    ; PARAMETERS
+    ;  * device - de device die toegevoegd moet worden.
+    ; RETURN VALUE
+    ;  #<void>
+    ; SYNOPSIS
     (define (add-device device) 
+    ; SOURCE
       (set! devices (cons device devices))
       ((new-action (string-append "Added device \""
                                   (device 'get-name)
                                   "\" to steward \""
                                   (get-room)
                                   "\"")) 'write))
-    
-    ;need high-order method (instruction 'instruction . args) ?
-    ;ex (instruction 'get element-type)
+    ;e===
+    ;b===m* steward/get
+    ; NAME
+    ;  get
+    ; DESCRIPTION
+    ;  Zendt een instruction naar de hardware van een beheerste device via een messenger.
+    ;  Geeft het antwoord van de harware terug.
+    ; PARAMETERS
+    ;  * element-type - het element-type die opgevraagd gaat worden.
+    ; RETURN VALUE
+    ;  integer - de waarde die de hardware gemeten heeft.
+    ;  #f - wanneer steward geen device beheerst die het gegeven element-type kan meten.
+    ; SYNOPSIS
     (define (get element-type)
+    ; SOURCE
       (let loop ((devs (get-devices)))
         (if (empty? devs)
             #f ;no device with elements to match request
@@ -64,9 +155,23 @@
               (if is ;result != false means we found a valid result
                   ((send room (car devs) is) 'get-value)
                   (loop (cdr devs)))))))
-    ;need high-order method (instruction 'instruction . args) ?
-    ;ex (instruction 'set element-type value)
+    ;e===
+    ;b===m* steward/set
+    ; NAME
+    ;  set
+    ; DESCRIPTION
+    ;  Zendt een instruction naar de hardware van een beheerste device via een messenger.
+    ;  Geeft het antwoord van de harware terug.
+    ; PARAMETERS
+    ;  * element-type - het element-type die aangepast moet worden.
+    ;  * value - de waarde waarop element-type aangepast moet worden.
+    ; RETURN VALUE
+    ;  #t - wanneer de waarde correct werd aangepast.
+    ;  #f - wanneer de waarde niet werd aangepast.
+    ;  #f - wanneer steward geen device beheerst die het gegeven element-type kan aanpassen.
+    ; SYNOPSIS
     (define (set element-type value)
+    ; SOURCE
       (let loop ((devs (get-devices)))
         (if (empty? devs)
             #f ;no device with elements to match request
@@ -82,9 +187,19 @@
                                              "\"")) 'write)
                  ((send room (car devs) is) 'get-value))
                 (else (loop (cdr devs))))))))
-    
-    (define (get-rule-manager) rule-manager)
-    
+    ;e===
+    ;b===m* steward/get-rule-manager
+    ; NAME
+    ;  get-rule-manager
+    ; DESCRIPTION
+    ;  Geeft de rule-manager van deze steward terug.
+    ; RETURN VALUE
+    ;  rule-manager - deze steward's rule manager.
+    ; SYNOPSIS
+    (define (get-rule-manager)
+    ; SOURCE
+      rule-manager)
+    ;e===
     
     (define (dispatch message . args)
       (case message

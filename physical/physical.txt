@@ -1,0 +1,10 @@
+;b===h* domotica/physical
+; NAME
+;  physical
+; DESCRIPTION
+;  Dit module bevat de verschillende klasses die gebruikt
+;  worden door de hardware of de hardware simuleren.
+;  De steward-server klasse runt op elke steward,
+;  terwijl hardware-device en physical-room gebruikt worden
+;  tijdens het simuleren van het domotica-systeem.
+;e===

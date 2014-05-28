@@ -1,0 +1,24 @@
+;b===h* /domotica
+; NAME
+;  domotica
+; DESCRIPTION
+;  Domotica is een systeem die het energieverbruik in een gebouw beheerst.
+;  Elke kamer van het gebouw bevat een steward die met zijn verschillende
+;  hardware toestellen communiceert.
+;  De verschillende stewards worden beheerst door een centrale server : de central-unit.
+;  De gebruiker kan via de central-unit de data van de stewards (temperatuur...) opvragen en aanpassen.
+;  Ook is het mogelijk om via een rule-systeem een planning op te stellen
+;  zodanig dat de data op een specifieke tijd vanzelf aangepast wordt.
+;
+;  Het domotica systeem is onderverdeeld in verschillende modules :
+;  * internal - bevat de kern van het domotica systeem.
+;  * communication - voorziet methodes om met de steward en hardware te communiceren.
+;  * physical - simuleert het gedrag van de hardware en bevat de server klasse die op de steward moet runnen.
+;  * rule - voorziet de verschillende klassen omtremt het rule-systeem.
+;  * structure - extra ADT's die nodig zijn in het programma (zoals map).
+;  * db - bevat de gegevensbank-manager.
+;  * gui - hiermee kan de gebruiker interageren met de central-unit.
+;  * unit-test - de klassen van de modules worden hierin getest.
+;
+;  image:class-diagram/class-diagram.png
+;e===

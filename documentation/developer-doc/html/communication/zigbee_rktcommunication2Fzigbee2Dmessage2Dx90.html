@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="../robodoc.css" type="text/css" />
+<title>./domotica/communication/zigbee.rkt</title>
+<!-- Source: ./domotica/communication/zigbee.rkt -->
+<!-- Generated with ROBODoc Version 4.99.41 (Feb  6 2011) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./communication_txtdomotica2Fcommunication.html#robo6">communication</a><a class="menuitem" href="../robo_classes.html#robo_top_of_doc">Classes</a></div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo55">communication/zigbee-message-x90</a></li>
+<ul>
+<li>1.1. <a href="./zigbee_rktzigbee2Dmessage2Dx902Fnew2Dzigbee2Dmessage2Dx90.html#robo33">zigbee-message-x90/new-zigbee-message-x90</a></li>
+<li>1.2. <a href="./zigbee_rktzigbee2Dmessage2Dx902Fget2Daddress64.html#robo176">zigbee-message-x90/get-address64</a></li>
+<li>1.3. <a href="./zigbee_rktzigbee2Dmessage2Dx902Fget2Dzigbee2Dinstruction.html#robo177">zigbee-message-x90/get-zigbee-instruction</a></li>
+<li>1.4. <a href="./zigbee_rktzigbee2Dmessage2Dx902Fto2Dvector.html#robo178">zigbee-message-x90/to-vector</a></li>
+<li>1.5. <a href="./zigbee_rktzigbee2Dmessage2Dx902Ftype.html#robo179">zigbee-message-x90/type</a></li>
+</ul>
+</ul>
+<hr />
+<a name="communication2fzigbee2dmessage2dx90"></a>
+<a name="robo55"></a><h2>communication/zigbee-message-x90 [ Classes ]</h2>
+
+<p class="item_name">NAME</p>
+<p>  <strong>zigbee-message-x90</strong>
+</p>
+<p class="item_name">DESCRIPTION</p>
+<p>  Een classe die een zigbee bytevector van <a href="./zigbee_rktzigbee2Dmessage2Dx902Ftype.html#robo179">type</a> x90 voorstelt.
+  De opstelling van een zigbee vector (x90) :
+</p>
+<pre>   * 0 : het <a href="./zigbee_rktzigbee2Dmessage2Dx902Ftype.html#robo179">type</a> (in dit geval x90/144)
+   * 1-8 : 64bit adres
+   * 9-10 : 16bit adres
+   * 11 : recieve option
+   * 12-* : de bytevector van een <a href="./zigbee_rktcommunication2Fzigbee2Dinstruction.html#robo51">zigbee-instruction</a>
+</pre>
+<p></p>
+<p class="item_name">PARENTS</p>
+<pre>  * <a href="./zigbee_rktcommunication2Fzigbee2Dmessage.html#robo52">zigbee-message</a>
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./domotica/communication/zigbee.rkt with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.41 on Wed May 28 2014 13:15:37
+</p>
+</div> <!-- footer -->
+</body>
+</html>

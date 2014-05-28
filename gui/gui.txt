@@ -1,0 +1,9 @@
+;b===h* domotica/gui
+; NAME
+;  gui
+; DESCRIPTION
+;  Het gui module bevat de klassen omtremt de Graphical User Interface.
+;  Hiermee kan de gebruiker interageren met het programma en 
+;  aan de central-unit vragen om stewards of devices toe te voegen of verwijderen. 
+;  Hij kan nieuwe rules maken en instructions zenden naar de hardware.
+;e===

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./domotica/domotica.txt</title>
+<!-- Source: ./domotica/domotica.txt -->
+<!-- Generated with ROBODoc Version 4.99.41 (Feb  6 2011) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./robo_modules.html#robo_top_of_doc">Modules</a></div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo0">/domotica</a></li>
+<ul>
+<li>1.1. <a href="./communication/communication_txtdomotica2Fcommunication.html#robo6">domotica/communication</a></li>
+<ul>
+<li>1.1.1. <a href="./communication/action_rktcommunication2Faction.html#robo46">communication/action</a></li>
+<ul>
+<li>1.1.1.1. <a href="./communication/action_rktaction2Fnew2Daction.html#robo1">action/new-action</a></li>
+<li>1.1.1.2. <a href="./communication/action_rktaction2Fto2Dstring.html#robo35">action/to-string</a></li>
+<li>1.1.1.3. <a href="./communication/action_rktaction2Fwrite.html#robo36">action/write</a></li>
+</ul>
+<li>1.1.2. <a href="./communication/messenger_rktcommunication2Fmessenger.html#robo47">communication/messenger</a></li>
+<ul>
+<li>1.1.2.1. <a href="./communication/messenger_rktmessenger2Fsend.html#robo113">messenger/send</a></li>
+</ul>
+<li>1.1.3. <a href="./communication/parser_rktcommunication2Fparser.html#robo48">communication/parser</a></li>
+<ul>
+<li>1.1.3.1. <a href="./communication/parser_rktparser2Finstruction2Dto2Dlist.html#robo114">parser/instruction-to-list</a></li>
+<li>1.1.3.2. <a href="./communication/parser_rktparser2Flist2Dto2Dinstruction.html#robo115">parser/list-to-instruction</a></li>
+</ul>
+<li>1.1.4. <a href="./communication/messenger_rktcommunication2Fsteward2Dport2Dmap.html#robo49">communication/steward-port-map</a></li>
+<li>1.1.5. <a href="./communication/xbee-simulation_rktcommunication2Fxbee2Dsimulation.html#robo50">communication/xbee-simulation</a></li>
+<ul>
+<li>1.1.5.1. <a href="./communication/xbee-simulation_rktxbee2Dsimulation2Fxbee2Dinitialise.html#robo29">xbee-simulation/xbee-initialise</a></li>
+<li>1.1.5.2. <a href="./communication/xbee-simulation_rktxbee2Dsimulation2Fxbee2Ddiscover2Dnodes.html#robo156">xbee-simulation/xbee-discover-nodes</a></li>
+<li>1.1.5.3. <a href="./communication/xbee-simulation_rktxbee2Dsimulation2Fxbee2Dlist2Dnodes.html#robo157">xbee-simulation/xbee-list-nodes</a></li>
+<li>1.1.5.4. <a href="./communication/xbee-simulation_rktxbee2Dsimulation2Fxbee2Dread2Dframe.html#robo158">xbee-simulation/xbee-read-frame</a></li>
+<li>1.1.5.5. <a href="./communication/xbee-simulation_rktxbee2Dsimulation2Fxbee2Dready3F.html#robo159">xbee-simulation/xbee-ready?</a></li>
+<li>1.1.5.6. <a href="./communication/xbee-simulation_rktxbee2Dsimulation2Fxbee2Dtick.html#robo160">xbee-simulation/xbee-tick</a></li>
+<li>1.1.5.7. <a href="./communication/xbee-simulation_rktxbee2Dsimulation2Fxbee2Dwrite.html#robo161">xbee-simulation/xbee-write</a></li>
+</ul>
+<li>1.1.6. <a href="./communication/zigbee_rktcommunication2Fzigbee2Dinstruction.html#robo51">communication/zigbee-instruction</a></li>
+<ul>
+<li>1.1.6.1. <a href="./communication/zigbee_rktzigbee2Dinstruction2Fnew2Dzigbee2Dinstruction.html#robo30">zigbee-instruction/new-zigbee-instruction</a></li>
+<li>1.1.6.2. <a href="./communication/zigbee_rktzigbee2Dinstruction2Facknowledged3F.html#robo162">zigbee-instruction/acknowledged?</a></li>
+<li>1.1.6.3. <a href="./communication/zigbee_rktzigbee2Dinstruction2Fexecute2Dzigbee2Dinstruction.html#robo163">zigbee-instruction/execute-zigbee-instruction</a></li>
+<li>1.1.6.4. <a href="./communication/zigbee_rktzigbee2Dinstruction2Fto2Dstring.html#robo164">zigbee-instruction/to-string</a></li>
+<li>1.1.6.5. <a href="./communication/zigbee_rktzigbee2Dinstruction2Fto2Dvector.html#robo165">zigbee-instruction/to-vector</a></li>
+<li>1.1.6.6. <a href="./communication/zigbee_rktzigbee2Dinstruction2Ftype.html#robo166">zigbee-instruction/type</a></li>
+<li>1.1.6.7. <a href="./communication/zigbee_rktzigbee2Dinstruction2Fvalues.html#robo167">zigbee-instruction/values</a></li>
+</ul>
+<li>1.1.7. <a href="./communication/zigbee_rktcommunication2Fzigbee2Dmessage.html#robo52">communication/zigbee-message</a></li>
+<ul>
+<li>1.1.7.1. <a href="./communication/zigbee_rktzigbee2Dmessage2Fnew2Dzigbee2Dmessage.html#robo34">zigbee-message/new-zigbee-message</a></li>
+<li>1.1.7.2. <a href="./communication/zigbee_rktzigbee2Dmessage2Fzigbee2Drecieve2Dpaquet.html#robo180">zigbee-message/zigbee-recieve-paquet</a></li>
+<li>1.1.7.3. <a href="./communication/zigbee_rktzigbee2Dmessage2Fzigbee2Dtransmit2Drequest.html#robo181">zigbee-message/zigbee-transmit-request</a></li>
+<li>1.1.7.4. <a href="./communication/zigbee_rktzigbee2Dmessage2Fzigbee2Dtransmit2Dstatus.html#robo182">zigbee-message/zigbee-transmit-status</a></li>
+<li>1.1.7.5. <a href="./communication/zigbee_rktzigbee2Dmessage2Fzigbee2Dvector2Dto2Dzigbee2Dstring.html#robo183">zigbee-message/zigbee-vector-to-zigbee-string</a></li>
+</ul>
+<li>1.1.8. <a href="./communication/zigbee_rktcommunication2Fzigbee2Dmessage2Dx10.html#robo53">communication/zigbee-message-x10</a></li>
+<ul>
+<li>1.1.8.1. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx102Fnew2Dzigbee2Dmessage2Dx10.html#robo31">zigbee-message-x10/new-zigbee-message-x10</a></li>
+<li>1.1.8.2. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx102Fget2Daddress64.html#robo168">zigbee-message-x10/get-address64</a></li>
+<li>1.1.8.3. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx102Fget2Dzigbee2Dinstruction.html#robo169">zigbee-message-x10/get-zigbee-instruction</a></li>
+<li>1.1.8.4. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx102Fto2Dvector.html#robo170">zigbee-message-x10/to-vector</a></li>
+<li>1.1.8.5. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx102Ftype.html#robo171">zigbee-message-x10/type</a></li>
+</ul>
+<li>1.1.9. <a href="./communication/zigbee_rktcommunication2Fzigbee2Dmessage2Dx8b.html#robo54">communication/zigbee-message-x8b</a></li>
+<ul>
+<li>1.1.9.1. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx8b2Fnew2Dzigbee2Dmessage2Dx8b.html#robo32">zigbee-message-x8b/new-zigbee-message-x8b</a></li>
+<li>1.1.9.2. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx8b2Fdelivered3F.html#robo172">zigbee-message-x8b/delivered?</a></li>
+<li>1.1.9.3. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx8b2Fget2Dretry2Dcount.html#robo173">zigbee-message-x8b/get-retry-count</a></li>
+<li>1.1.9.4. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx8b2Fto2Dvector.html#robo174">zigbee-message-x8b/to-vector</a></li>
+<li>1.1.9.5. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx8b2Ftype.html#robo175">zigbee-message-x8b/type</a></li>
+</ul>
+<li>1.1.10. <a href="./communication/zigbee_rktcommunication2Fzigbee2Dmessage2Dx90.html#robo55">communication/zigbee-message-x90</a></li>
+<ul>
+<li>1.1.10.1. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx902Fnew2Dzigbee2Dmessage2Dx90.html#robo33">zigbee-message-x90/new-zigbee-message-x90</a></li>
+<li>1.1.10.2. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx902Fget2Daddress64.html#robo176">zigbee-message-x90/get-address64</a></li>
+<li>1.1.10.3. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx902Fget2Dzigbee2Dinstruction.html#robo177">zigbee-message-x90/get-zigbee-instruction</a></li>
+<li>1.1.10.4. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx902Fto2Dvector.html#robo178">zigbee-message-x90/to-vector</a></li>
+<li>1.1.10.5. <a href="./communication/zigbee_rktzigbee2Dmessage2Dx902Ftype.html#robo179">zigbee-message-x90/type</a></li>
+</ul>
+</ul>
+<li>1.2. <a href="./db/db_txtdomotica2Fdb.html#robo7">domotica/db</a></li>
+<ul>
+<li>1.2.1. <a href="./db/manager_rktdb2Fdb2Dmanager.html#robo64">db/db-manager</a></li>
+<ul>
+<li>1.2.1.1. <a href="./db/manager_rktdb2Dmanager2Fnew2Ddb2Dmanager.html#robo4">db-manager/new-db-manager</a></li>
+<li>1.2.1.2. <a href="./db/manager_rktdb2Dmanager2Fadd2Ddevice.html#robo56">db-manager/add-device</a></li>
+<li>1.2.1.3. <a href="./db/manager_rktdb2Dmanager2Fadd2Ddevice2Dtype.html#robo57">db-manager/add-device-type</a></li>
+<li>1.2.1.4. <a href="./db/manager_rktdb2Dmanager2Fadd2Dsteward.html#robo58">db-manager/add-steward</a></li>
+<li>1.2.1.5. <a href="./db/manager_rktdb2Dmanager2Fadd2Dtime2Dvalue.html#robo59">db-manager/add-time-value</a></li>
+<li>1.2.1.6. <a href="./db/manager_rktdb2Dmanager2Fget2Drules.html#robo60">db-manager/get-rules</a></li>
+<li>1.2.1.7. <a href="./db/manager_rktdb2Dmanager2Fremove2Ddevice.html#robo61">db-manager/remove-device</a></li>
+<li>1.2.1.8. <a href="./db/manager_rktdb2Dmanager2Frestore2Dstate.html#robo62">db-manager/restore-state</a></li>
+<li>1.2.1.9. <a href="./db/manager_rktdb2Dmanager2Fupdate2Drules.html#robo63">db-manager/update-rules</a></li>
+</ul>
+</ul>
+<li>1.3. <a href="./gui/gui_txtdomotica2Fgui.html#robo8">domotica/gui</a></li>
+<li>1.4. <a href="./internal/internal_txtdomotica2Finternal.html#robo9">domotica/internal</a></li>
+<ul>
+<li>1.4.1. <a href="./internal/actuator_rktinternal2Factuator.html#robo97">internal/actuator</a></li>
+<ul>
+<li>1.4.1.1. <a href="./internal/actuator_rktactuator2Fnew2Dactuator.html#robo2">actuator/new-actuator</a></li>
+<li>1.4.1.2. <a href="./internal/actuator_rktactuator2Fclass.html#robo37">actuator/class</a></li>
+<li>1.4.1.3. <a href="./internal/actuator_rktactuator2Fset2Dvalue.html#robo38">actuator/set-value</a></li>
+<li>1.4.1.4. <a href="./internal/actuator_rktactuator2Fsuper.html#robo39">actuator/super</a></li>
+</ul>
+<li>1.4.2. <a href="./internal/central-unit_rktinternal2Fcentral2Dunit.html#robo98">internal/central-unit</a></li>
+<ul>
+<li>1.4.2.1. <a href="./internal/central-unit_rktcentral2Dunit2Fnew2Dcentral2Dunit.html#robo3">central-unit/new-central-unit</a></li>
+<li>1.4.2.2. <a href="./internal/central-unit_rktcentral2Dunit2Fadd2Dsteward.html#robo40">central-unit/add-steward</a></li>
+<li>1.4.2.3. <a href="./internal/central-unit_rktcentral2Dunit2Fclass.html#robo41">central-unit/class</a></li>
+<li>1.4.2.4. <a href="./internal/central-unit_rktcentral2Dunit2Ffor2Deach2Dsteward.html#robo42">central-unit/for-each-steward</a></li>
+<li>1.4.2.5. <a href="./internal/central-unit_rktcentral2Dunit2Fget2Dsteward.html#robo43">central-unit/get-steward</a></li>
+<li>1.4.2.6. <a href="./internal/central-unit_rktcentral2Dunit2Fget2Dstewards.html#robo44">central-unit/get-stewards</a></li>
+<li>1.4.2.7. <a href="./internal/central-unit_rktcentral2Dunit2Fremove2Dsteward.html#robo45">central-unit/remove-steward</a></li>
+</ul>
+<li>1.4.3. <a href="./internal/device_rktinternal2Fdevice.html#robo99">internal/device</a></li>
+<ul>
+<li>1.4.3.1. <a href="./internal/device_rktdevice2Fnew2Ddevice.html#robo5">device/new-device</a></li>
+<li>1.4.3.2. <a href="./internal/device_rktdevice2Fadd2Delement.html#robo65">device/add-element</a></li>
+<li>1.4.3.3. <a href="./internal/device_rktdevice2Fclass.html#robo66">device/class</a></li>
+<li>1.4.3.4. <a href="./internal/device_rktdevice2Fdevice2Dtypes.html#robo67">device/device-types</a></li>
+<li>1.4.3.5. <a href="./internal/device_rktdevice2Fget.html#robo68">device/get</a></li>
+<li>1.4.3.6. <a href="./internal/device_rktdevice2Fget2Delements.html#robo69">device/get-elements</a></li>
+<li>1.4.3.7. <a href="./internal/device_rktdevice2Fget2Dname.html#robo70">device/get-name</a></li>
+<li>1.4.3.8. <a href="./internal/device_rktdevice2Fget2Dserial2Dnumber.html#robo71">device/get-serial-number</a></li>
+<li>1.4.3.9. <a href="./internal/device_rktdevice2Fset.html#robo72">device/set</a></li>
+</ul>
+<li>1.4.4. <a href="./internal/element_rktinternal2Felement.html#robo100">internal/element</a></li>
+<ul>
+<li>1.4.4.1. <a href="./internal/element_rktelement2Fnew2Delement.html#robo14">element/new-element</a></li>
+<li>1.4.4.2. <a href="./internal/element_rktelement2Fclass.html#robo78">element/class</a></li>
+<li>1.4.4.3. <a href="./internal/element_rktelement2Fget2Dtype.html#robo79">element/get-type</a></li>
+</ul>
+<li>1.4.5. <a href="./internal/element-type_rktinternal2Felement2Dtype.html#robo101">internal/element-type</a></li>
+<ul>
+<li>1.4.5.1. <a href="./internal/element-type_rktelement2Dtype2Felement2Dtype2Dzigbee2Dtype2Dmap.html#robo73">element-type/element-type-zigbee-type-map</a></li>
+<li>1.4.5.2. <a href="./internal/element-type_rktelement2Dtype2Ffor2Deach2Delement2Dtype.html#robo74">element-type/for-each-element-type</a></li>
+<li>1.4.5.3. <a href="./internal/element-type_rktelement2Dtype2FLIGHT.html#robo75">element-type/LIGHT</a></li>
+<li>1.4.5.4. <a href="./internal/element-type_rktelement2Dtype2FTEMPERATURE.html#robo76">element-type/TEMPERATURE</a></li>
+<li>1.4.5.5. <a href="./internal/element-type_rktelement2Dtype2Fto2Dstring.html#robo77">element-type/to-string</a></li>
+</ul>
+<li>1.4.6. <a href="./internal/instruction_rktinternal2Finstruction.html#robo102">internal/instruction</a></li>
+<ul>
+<li>1.4.6.1. <a href="./internal/instruction_rktinstruction2Fnew2Dinstruction.html#robo19">instruction/new-instruction</a></li>
+<li>1.4.6.2. <a href="./internal/instruction_rktinstruction2Fget.html#robo95">instruction/get</a></li>
+<li>1.4.6.3. <a href="./internal/instruction_rktinstruction2Fget2Dtag.html#robo96">instruction/get-tag</a></li>
+</ul>
+<li>1.4.7. <a href="./internal/instruction_rktinternal2Finstruction2Dget.html#robo103">internal/instruction-get</a></li>
+<ul>
+<li>1.4.7.1. <a href="./internal/instruction_rktinstruction2Dget2Fnew2Dinstruction2Dget.html#robo16">instruction-get/new-instruction-get</a></li>
+<li>1.4.7.2. <a href="./internal/instruction_rktinstruction2Dget2Fexecute.html#robo84">instruction-get/execute</a></li>
+<li>1.4.7.3. <a href="./internal/instruction_rktinstruction2Dget2Fget2Delement2Dtype.html#robo85">instruction-get/get-element-type</a></li>
+<li>1.4.7.4. <a href="./internal/instruction_rktinstruction2Dget2Ftag.html#robo86">instruction-get/tag</a></li>
+<li>1.4.7.5. <a href="./internal/instruction_rktinstruction2Dget2Fvalue2Dof.html#robo87">instruction-get/value-of</a></li>
+</ul>
+<li>1.4.8. <a href="./internal/instruction_rktinternal2Finstruction2Dput.html#robo104">internal/instruction-put</a></li>
+<ul>
+<li>1.4.8.1. <a href="./internal/instruction_rktinstruction2Dput2Fnew2Dinstruction2Dput.html#robo17">instruction-put/new-instruction-put</a></li>
+<li>1.4.8.2. <a href="./internal/instruction_rktinstruction2Dput2Fexecute.html#robo88">instruction-put/execute</a></li>
+<li>1.4.8.3. <a href="./internal/instruction_rktinstruction2Dput2Fget2Delement2Dtype.html#robo89">instruction-put/get-element-type</a></li>
+<li>1.4.8.4. <a href="./internal/instruction_rktinstruction2Dput2Fget2Dvalue.html#robo90">instruction-put/get-value</a></li>
+<li>1.4.8.5. <a href="./internal/instruction_rktinstruction2Dput2Ftag.html#robo91">instruction-put/tag</a></li>
+<li>1.4.8.6. <a href="./internal/instruction_rktinstruction2Dput2Fvalue2Dof.html#robo92">instruction-put/value-of</a></li>
+</ul>
+<li>1.4.9. <a href="./internal/instruction_rktinternal2Finstruction2Dret.html#robo105">internal/instruction-ret</a></li>
+<ul>
+<li>1.4.9.1. <a href="./internal/instruction_rktinstruction2Dret2Fnew2Dinstruction2Dret.html#robo18">instruction-ret/new-instruction-ret</a></li>
+<li>1.4.9.2. <a href="./internal/instruction_rktinstruction2Dret2Fget2Dvalue.html#robo93">instruction-ret/get-value</a></li>
+<li>1.4.9.3. <a href="./internal/instruction_rktinstruction2Dret2Ftag.html#robo94">instruction-ret/tag</a></li>
+</ul>
+<li>1.4.10. <a href="./internal/sensor_rktinternal2Fsensor.html#robo106">internal/sensor</a></li>
+<ul>
+<li>1.4.10.1. <a href="./internal/sensor_rktsensor2Fnew2Dsensor.html#robo25">sensor/new-sensor</a></li>
+<li>1.4.10.2. <a href="./internal/sensor_rktsensor2Fclass.html#robo139">sensor/class</a></li>
+<li>1.4.10.3. <a href="./internal/sensor_rktsensor2Fget2Dvalue.html#robo140">sensor/get-value</a></li>
+<li>1.4.10.4. <a href="./internal/sensor_rktsensor2Fsuper.html#robo141">sensor/super</a></li>
+</ul>
+<li>1.4.11. <a href="./internal/steward_rktinternal2Fsteward.html#robo107">internal/steward</a></li>
+<ul>
+<li>1.4.11.1. <a href="./internal/steward_rktsteward2Fnew2Dsteward.html#robo27">steward/new-steward</a></li>
+<li>1.4.11.2. <a href="./internal/steward_rktsteward2Fadd2Ddevice.html#robo142">steward/add-device</a></li>
+<li>1.4.11.3. <a href="./internal/steward_rktsteward2Fclass.html#robo143">steward/class</a></li>
+<li>1.4.11.4. <a href="./internal/steward_rktsteward2Fget.html#robo144">steward/get</a></li>
+<li>1.4.11.5. <a href="./internal/steward_rktsteward2Fget2Ddevices.html#robo145">steward/get-devices</a></li>
+<li>1.4.11.6. <a href="./internal/steward_rktsteward2Fget2Dip.html#robo146">steward/get-ip</a></li>
+<li>1.4.11.7. <a href="./internal/steward_rktsteward2Fget2Droom.html#robo147">steward/get-room</a></li>
+<li>1.4.11.8. <a href="./internal/steward_rktsteward2Fget2Drule2Dmanager.html#robo148">steward/get-rule-manager</a></li>
+<li>1.4.11.9. <a href="./internal/steward_rktsteward2Fremove2Ddevice.html#robo149">steward/remove-device</a></li>
+<li>1.4.11.10. <a href="./internal/steward_rktsteward2Fset.html#robo150">steward/set</a></li>
+</ul>
+</ul>
+<li>1.5. <a href="./physical/physical_txtdomotica2Fphysical.html#robo10">domotica/physical</a></li>
+<ul>
+<li>1.5.1. <a href="./physical/hardware-device_rktphysical2Fhardware2Ddevice.html#robo119">physical/hardware-device</a></li>
+<ul>
+<li>1.5.1.1. <a href="./physical/hardware-device_rkthardware2Ddevice2Fnew2Dhardware2Ddevice.html#robo15">hardware-device/new-hardware-device</a></li>
+<li>1.5.1.2. <a href="./physical/hardware-device_rkthardware2Ddevice2Fget2Daddress64.html#robo80">hardware-device/get-address64</a></li>
+<li>1.5.1.3. <a href="./physical/hardware-device_rkthardware2Ddevice2Fget2Droom.html#robo81">hardware-device/get-room</a></li>
+<li>1.5.1.4. <a href="./physical/hardware-device_rkthardware2Ddevice2Fget2Dserial2Dnumber.html#robo82">hardware-device/get-serial-number</a></li>
+<li>1.5.1.5. <a href="./physical/hardware-device_rkthardware2Ddevice2Fhardware2Ddevice2Dmap.html#robo83">hardware-device/hardware-device-map</a></li>
+</ul>
+<li>1.5.2. <a href="./physical/physical-room_rktphysical2Fphysical2Droom.html#robo120">physical/physical-room</a></li>
+<ul>
+<li>1.5.2.1. <a href="./physical/physical-room_rktphysical2Droom2Fnew2Dphysical2Droom.html#robo21">physical-room/new-physical-room</a></li>
+<li>1.5.2.2. <a href="./physical/physical-room_rktphysical2Droom2Fget.html#robo116">physical-room/get</a></li>
+<li>1.5.2.3. <a href="./physical/physical-room_rktphysical2Droom2Fget2Dname.html#robo117">physical-room/get-name</a></li>
+<li>1.5.2.4. <a href="./physical/physical-room_rktphysical2Droom2Fset.html#robo118">physical-room/set</a></li>
+</ul>
+<li>1.5.3. <a href="./physical/steward-server_rktphysical2Fsteward2Dserver.html#robo121">physical/steward-server</a></li>
+<ul>
+<li>1.5.3.1. <a href="./physical/steward-server_rktsteward2Dserver2Fnew2Dsteward2Dserver.html#robo26">steward-server/new-steward-server</a></li>
+</ul>
+</ul>
+<li>1.6. <a href="./rule/rule_txtdomotica2Frules.html#robo11">domotica/rules</a></li>
+<ul>
+<li>1.6.1. <a href="./rule/recurrence_rktrules2Frecurrence.html#robo135">rules/recurrence</a></li>
+<ul>
+<li>1.6.1.1. <a href="./rule/recurrence_rktrecurrence2Fnew2Drecurrence.html#robo22">recurrence/new-recurrence</a></li>
+<li>1.6.1.2. <a href="./rule/recurrence_rktrecurrence2Fget2Dend.html#robo122">recurrence/get-end</a></li>
+<li>1.6.1.3. <a href="./rule/recurrence_rktrecurrence2Fget2Dtype.html#robo123">recurrence/get-type</a></li>
+<li>1.6.1.4. <a href="./rule/recurrence_rktrecurrence2Fnext.html#robo124">recurrence/next</a></li>
+</ul>
+<li>1.6.2. <a href="./rule/rule_rktrules2Frule.html#robo136">rules/rule</a></li>
+<ul>
+<li>1.6.2.1. <a href="./rule/rule_rktrule2Fnew2Drule.html#robo24">rule/new-rule</a></li>
+<li>1.6.2.2. <a href="./rule/rule_rktrule2Fexecute.html#robo130">rule/execute</a></li>
+<li>1.6.2.3. <a href="./rule/rule_rktrule2Fget2Delement2Dtype.html#robo131">rule/get-element-type</a></li>
+<li>1.6.2.4. <a href="./rule/rule_rktrule2Fget2Dinterval.html#robo132">rule/get-interval</a></li>
+<li>1.6.2.5. <a href="./rule/rule_rktrule2Fget2Dvalue.html#robo133">rule/get-value</a></li>
+<li>1.6.2.6. <a href="./rule/rule_rktrule2Fto2Dstring.html#robo134">rule/to-string</a></li>
+</ul>
+<li>1.6.3. <a href="./rule/rule-manager_rktrules2Frule2Dmanager.html#robo137">rules/rule-manager</a></li>
+<ul>
+<li>1.6.3.1. <a href="./rule/rule-manager_rktrule2Dmanager2Fnew2Drule2Dmanager.html#robo23">rule-manager/new-rule-manager</a></li>
+<li>1.6.3.2. <a href="./rule/rule-manager_rktrule2Dmanager2Fadd2Drule.html#robo125">rule-manager/add-rule</a></li>
+<li>1.6.3.3. <a href="./rule/rule-manager_rktrule2Dmanager2Fexecute.html#robo126">rule-manager/execute</a></li>
+<li>1.6.3.4. <a href="./rule/rule-manager_rktrule2Dmanager2Fget2Drules.html#robo127">rule-manager/get-rules</a></li>
+<li>1.6.3.5. <a href="./rule/rule-manager_rktrule2Dmanager2Fget2Dsteward.html#robo128">rule-manager/get-steward</a></li>
+<li>1.6.3.6. <a href="./rule/rule-manager_rktrule2Dmanager2Fremove2Drule.html#robo129">rule-manager/remove-rule</a></li>
+</ul>
+<li>1.6.4. <a href="./rule/time-interval_rktrules2Ftime2Dinterval.html#robo138">rules/time-interval</a></li>
+<ul>
+<li>1.6.4.1. <a href="./rule/time-interval_rkttime2Dinterval2Fnew2Dtime2Dinterval.html#robo28">time-interval/new-time-interval</a></li>
+<li>1.6.4.2. <a href="./rule/time-interval_rkttime2Dinterval2Fget2Ddate.html#robo153">time-interval/get-date</a></li>
+<li>1.6.4.3. <a href="./rule/time-interval_rkttime2Dinterval2Fget2Drecurrence.html#robo154">time-interval/get-recurrence</a></li>
+<li>1.6.4.4. <a href="./rule/time-interval_rkttime2Dinterval2Fis2Don2Dtime.html#robo155">time-interval/is-on-time</a></li>
+</ul>
+</ul>
+<li>1.7. <a href="./structure/structure_txtdomotica2Fstructure.html#robo12">domotica/structure</a></li>
+<ul>
+<li>1.7.1. <a href="./structure/hostname_rktstructure2Fget2Dipv42Daddrs.html#robo151">structure/get-ipv4-addrs</a></li>
+<li>1.7.2. <a href="./structure/map_rktstructure2Fmap.html#robo152">structure/map</a></li>
+<ul>
+<li>1.7.2.1. <a href="./structure/map_rktmap2Fnew2Dmap.html#robo20">map/new-map</a></li>
+<li>1.7.2.2. <a href="./structure/map_rktmap2Fadd21.html#robo108">map/add!</a></li>
+<li>1.7.2.3. <a href="./structure/map_rktmap2Fget2Delements.html#robo109">map/get-elements</a></li>
+<li>1.7.2.4. <a href="./structure/map_rktmap2Fget2Dkeys.html#robo110">map/get-keys</a></li>
+<li>1.7.2.5. <a href="./structure/map_rktmap2Fkey.html#robo111">map/key</a></li>
+<li>1.7.2.6. <a href="./structure/map_rktmap2Fremove21.html#robo112">map/remove!</a></li>
+</ul>
+</ul>
+<li>1.8. <a href="./unit-test/unit-test_txtdomotica2Funit2Dtest.html#robo13">domotica/unit-test</a></li>
+</ul>
+</ul>
+<hr />
+<a name="2fdomotica"></a>
+<a name="robo0"></a><h2>/domotica [ Modules ]</h2>
+
+<p class="item_name">NAME</p>
+<p>  <strong>domotica</strong>
+</p>
+<p class="item_name">DESCRIPTION</p>
+<p>  Domotica is een systeem die het energieverbruik in een gebouw beheerst.
+  Elke kamer van het gebouw bevat een <a href="./internal/steward_rktinternal2Fsteward.html#robo107">steward</a> die met zijn verschillende
+  hardware toestellen communiceert.
+  De verschillende stewards worden beheerst door een centrale server : de <a href="./internal/central-unit_rktinternal2Fcentral2Dunit.html#robo98">central-unit</a>.
+  De gebruiker kan via de <a href="./internal/central-unit_rktinternal2Fcentral2Dunit.html#robo98">central-unit</a> de data van de stewards (temperatuur...) opvragen en aanpassen.
+  Ook is het mogelijk om via een <a href="./rule/rule_rktrules2Frule.html#robo136">rule</a>-systeem een planning op te stellen
+  zodanig dat de data op een specifieke tijd vanzelf aangepast wordt.
+</p>
+
+<p>  Het <strong>domotica</strong> systeem is onderverdeeld in verschillende modules :
+</p>
+<ul><li>  <a href="./internal/internal_txtdomotica2Finternal.html#robo9">internal</a> - bevat de kern van het <strong>domotica</strong> systeem.
+</li>
+<li>  <a href="./communication/communication_txtdomotica2Fcommunication.html#robo6">communication</a> - voorziet methodes om met de <a href="./internal/steward_rktinternal2Fsteward.html#robo107">steward</a> en hardware te communiceren.
+</li>
+<li>  <a href="./physical/physical_txtdomotica2Fphysical.html#robo10">physical</a> - simuleert het gedrag van de hardware en bevat de server klasse die op de <a href="./internal/steward_rktinternal2Fsteward.html#robo107">steward</a> moet runnen.
+</li>
+<li>  <a href="./rule/rule_rktrules2Frule.html#robo136">rule</a> - voorziet de verschillende klassen omtremt het <a href="./rule/rule_rktrules2Frule.html#robo136">rule</a>-systeem.
+</li>
+<li>  <a href="./structure/structure_txtdomotica2Fstructure.html#robo12">structure</a> - extra ADT's die nodig zijn in het programma (zoals <a href="./structure/map_rktstructure2Fmap.html#robo152">map</a>).
+</li>
+<li>  <a href="./db/db_txtdomotica2Fdb.html#robo7">db</a> - bevat de gegevensbank-manager.
+</li>
+<li>  <a href="./gui/gui_txtdomotica2Fgui.html#robo8">gui</a> - hiermee kan de gebruiker interageren met de <a href="./internal/central-unit_rktinternal2Fcentral2Dunit.html#robo98">central-unit</a>.
+</li>
+<li>  <a href="./unit-test/unit-test_txtdomotica2Funit2Dtest.html#robo13">unit-test</a> - de klassen van de modules worden hierin getest.
+</li>
+</ul>
+<p>
+  <img src="class-diagram/class-diagram.png">
+</p>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./domotica/domotica.txt with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.41 on Wed May 28 2014 13:15:34
+</p>
+</div> <!-- footer -->
+</body>
+</html>

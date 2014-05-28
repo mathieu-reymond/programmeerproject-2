@@ -1,0 +1,9 @@
+;b===h* domotica/rules
+; NAME
+;  rule
+; DESCRIPTION
+;  Het rule module bevat de klassen in verband met het rule-systeem.
+;  Rules laten toe om een planning te maken die automatisch instructies zendt aan de stewards.
+;  Het is bijvoordbeeld mogelijk om een rule te maken die
+;  elke maandag om 11.00 uur de temperatuur op 21°C zet.
+;e===

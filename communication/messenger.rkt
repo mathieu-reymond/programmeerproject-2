@@ -12,7 +12,15 @@
            new-steward-ports
            steward-port-map)
 
+;b===v* communication/steward-port-map
+; NAME
+;  steward-port-map
+; DESCRIPTION
+;  Een map die de stewards en hun input en output ports bijhoudt.
+;  Elke tupel is (steward-ip >< (cons input-port output-port))
+; SOURCE
 (define steward-port-map (new-map))
+;e===
 
 (define steward-in-port car)
 (define steward-out-port cdr)
@@ -21,26 +29,28 @@
                                       (djb2-port (steward 'get-room)))))
     (cons in out)))
 
-
-
-;Send the instruction-set to the device.
-;Open a pipe (input/output port) to communicate with the device,
-;convert the instruction-set to a string,
-;send the string over the port and await for the result
-;convert result back in a valid instruction
-;return result
-;@param device : the device which will recieve the message
-;@param instruction :the message that will be sent
-;@return isntruction : the response
-;(define (send2 device instruction)
-;  (let ((ports (hardware-device/port-map 'get-ports-for-hardware-device (device 'get-serial-number))) ;the ports to communicate with the corresponding hardware-device
-;        (parsed-instruction (instruction-to-list instruction))) ;need to parse to send over port
-;    (write parsed-instruction (cdr ports)) ;send instruction over port
-;    (let ((response (read (car ports)))) ;get response from hardware-device
-;      (list-to-instruction response)))) ;returns response as an instruction
-
-
+;b===c* communication/messenger
+; NAME
+;  messenger
+; DESCRIPTION
+;  De messenger handelt de communicatie tussen de central-unit en de steward-server af.
+;  Instructies worden via tcp/ip verzonden, de steward-server voert de instruction dan uit
+;  en geeft een antwoord terug die door de messenger gelezen wordt.
+;e===
+;b===m* messenger/send
+; NAME
+;  send
+; DESCRIPTION
+;  Zendt een instructie naar een specifieke steward-server via een tcp port.
+; PARAMETERS
+;  * steward-room - de naam van de kamer van de ontvanger
+;  * device - de device waarop de instructie toegepast moet worden.
+;  * instruction - de instructie die toegepast moet worden.
+; RETURN VALUE
+;  intsruction - het antwoord van de steward-server
+; SYNOPSIS
 (define (send steward-room device instruction)
+; SOURCE
   (let ((ports (steward-port-map 'find steward-room))
         (parsed-instruction (instruction-to-list instruction)))
     (write (cons (device 'get-serial-number) parsed-instruction) (steward-out-port ports))
@@ -48,3 +58,4 @@
     (let ((response (read (steward-in-port ports))))
       (display response) (newline)
       (list-to-instruction response))))
+;e===

@@ -1,0 +1,6 @@
+;b===h* domotica/structure
+; NAME
+;  structure
+; DESCRIPTION
+;  Het structure module bevat structuur klassen zoals map.
+;e===

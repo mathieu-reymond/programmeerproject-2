@@ -1,0 +1,23 @@
+;b===h* domotica/unit-test
+; NAME
+;  unit-test
+; DESCRIPTION
+;  Het unit-test module bevat een reeks testen die 
+;  de verschillende klassen van het domotica systeem testen.
+;  De klassen die getest worden zijn :
+;  * actuator
+;  * device
+;  * element
+;  * hardware-device
+;  * instruction
+;  * messenger
+;  * parser
+;  * physical-room
+;  * recurrence
+;  * rule
+;  * sensor
+;  * steward
+;  * time-interval
+;  * xbee-simulation
+;  * zigbee-instruction
+;e===

@@ -15,13 +15,36 @@
 
 (#%provide new-steward-server)
 
+;b===c* physical/steward-server
+; NAME
+;  steward-server
+; DESCRIPTION
+;  De server die op het steward toestel runt.
+;  Deze server leest instructions van de messenger,
+;  voert ze uit via zijn xbee-device en sendt het
+;  antwoord terug als een instruction-ret.
+;e===
+;b===o* steward-server/new-steward-server
+; NAME
+;  new-steward-server
+; DESCRIPTION
+;  Maakt een nieuwe steward-server aan.
+;  Een steward-server bevindt zich in een bepaalde kamer,
+;  de naam van de kamer moet dezelfde zijn als het overeenkomstige
+;  steward object beheerst door de central-unit
+;  omdat de naam van de kamer gebruikt wordt om de communicatie port te bepalen.
+; PARAMETERS
+;  * room - de naam van de kamer waarin de steward-server zich bevindt
+; SYNOPSIS
 (define (new-steward-server room)
+;e===
   (let* ((port (djb2-port room))
          (listen (tcp-listen port))
          (xbee (xbee-initialise "/dev/ttyUSB0" 9600)))
     (let-values (((in out) (tcp-accept listen)))
       (define (process-request)
         (let ((request (read in)))
+          (display "REQUEST : ") (display request) (newline)
           (if (pair? request)
               (let ((inst (list-to-instruction (cdr request))))
                 (define (execute-xbee timeout)
@@ -30,6 +53,7 @@
                   (if (not (xbee-ready? xbee))
                       (if (eq? timeout 20)
                           (instruction-to-list (new-instruction-ret #f)) ;TEMP something went wrong
+                          ;(begin (xbee-tick xbee) (execute-xbee 0))
                           (execute-xbee (+ timeout 1)))
                       (let ((again? #f)
                             (result #f))
@@ -51,6 +75,7 @@
                                (display (zigbee-message 'to-vector))
                                (newline)
                                (display ((zigbee-message 'get-zigbee-instruction) 'to-string))
+                               (display (inst 'value-of (zigbee-message 'get-zigbee-instruction)))
                                (set! result (inst 'value-of (zigbee-message 'get-zigbee-instruction)))
                                (display "/ result : ") (display result) (newline)
                                )
@@ -61,7 +86,9 @@
                         (define (frame-loop frame)
                           (cond
                             ((equal? frame (make-vector 0))
-                             (instruction-to-list (new-instruction-ret result))) ; finished reading frames
+                             (if (equal? (xbee-tick xbee) 0)
+                                 (instruction-to-list (new-instruction-ret result)) ; finished reading frames
+                                 (frame-loop (xbee-read-frame xbee))))
                             (else
                              (execute-frame frame)
                              (frame-loop (xbee-read-frame xbee)))))

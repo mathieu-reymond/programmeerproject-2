@@ -1,16 +1,19 @@
 #lang r5rs
 
-(#%require "test-instruction.rkt")
-(#%require "test-parser.rkt")
-(#%require "test-element.rkt")
-(#%require "test-sensor.rkt")
-(#%require "test-actuator.rkt")
-(#%require "test-device.rkt")
-(#%require "test-steward.rkt")
-(#%require "test-hardware-device.rkt")
-(#%require "test-physical-room.rkt")
-(#%require "test-xbee-simulation.rkt")
-(#%require "test-zigbee.rkt")
+(#%require "test-instruction.rkt"
+           "test-parser.rkt"
+           "test-element.rkt"
+           "test-sensor.rkt"
+           "test-actuator.rkt"
+           "test-device.rkt"
+           "test-steward.rkt"
+           "test-time-interval.rkt"
+           "test-recurrence.rkt"
+           "test-rule.rkt"
+           "test-hardware-device.rkt"
+           "test-physical-room.rkt"
+           "test-xbee-simulation.rkt"
+           "test-zigbee.rkt")
 
 (test-instruction)
 (test-parser)
@@ -19,6 +22,9 @@
 (test-actuator)
 (test-device)
 (test-steward)
+(test-time-interval)
+(test-recurrence)
+(test-rule)
 (test-hardware-device)
 (test-physical-room)
 (test-xbee-simulation)

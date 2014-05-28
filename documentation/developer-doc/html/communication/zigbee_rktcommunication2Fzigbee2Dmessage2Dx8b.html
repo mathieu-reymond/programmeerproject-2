@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="../robodoc.css" type="text/css" />
+<title>./domotica/communication/zigbee.rkt</title>
+<!-- Source: ./domotica/communication/zigbee.rkt -->
+<!-- Generated with ROBODoc Version 4.99.41 (Feb  6 2011) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc"></a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./communication_txtdomotica2Fcommunication.html#robo6">communication</a><a class="menuitem" href="../robo_classes.html#robo_top_of_doc">Classes</a></div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo54">communication/zigbee-message-x8b</a></li>
+<ul>
+<li>1.1. <a href="./zigbee_rktzigbee2Dmessage2Dx8b2Fnew2Dzigbee2Dmessage2Dx8b.html#robo32">zigbee-message-x8b/new-zigbee-message-x8b</a></li>
+<li>1.2. <a href="./zigbee_rktzigbee2Dmessage2Dx8b2Fdelivered3F.html#robo172">zigbee-message-x8b/delivered?</a></li>
+<li>1.3. <a href="./zigbee_rktzigbee2Dmessage2Dx8b2Fget2Dretry2Dcount.html#robo173">zigbee-message-x8b/get-retry-count</a></li>
+<li>1.4. <a href="./zigbee_rktzigbee2Dmessage2Dx8b2Fto2Dvector.html#robo174">zigbee-message-x8b/to-vector</a></li>
+<li>1.5. <a href="./zigbee_rktzigbee2Dmessage2Dx8b2Ftype.html#robo175">zigbee-message-x8b/type</a></li>
+</ul>
+</ul>
+<hr />
+<a name="communication2fzigbee2dmessage2dx8b"></a>
+<a name="robo54"></a><h2>communication/zigbee-message-x8b [ Classes ]</h2>
+
+<p class="item_name">NAME</p>
+<p>  <strong>zigbee-message-x8b</strong>
+</p>
+<p class="item_name">DESCRIPTION</p>
+<p>  Een classe die een zigbee bytevector van <a href="./zigbee_rktzigbee2Dmessage2Dx902Ftype.html#robo179">type</a> x8b voorstelt.
+  De opstelling van een zigbee vector (x8b) :
+</p>
+<pre>   * 0 : het <a href="./zigbee_rktzigbee2Dmessage2Dx902Ftype.html#robo179">type</a> (in dit geval x8b/139)
+   * 1 : de frame id
+   * 2-3 : 16bit adres
+   * 4 : retry-count
+   * 5 : delivery-status (x00 is delivered, x24 is address not found)
+   * 6 : discovery-status
+</pre>
+<p></p>
+<p class="item_name">PARENTS</p>
+<pre>  * <a href="./zigbee_rktcommunication2Fzigbee2Dmessage.html#robo52">zigbee-message</a>
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./domotica/communication/zigbee.rkt with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.41 on Wed May 28 2014 13:15:37
+</p>
+</div> <!-- footer -->
+</body>
+</html>
