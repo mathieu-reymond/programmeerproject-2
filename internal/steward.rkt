@@ -168,7 +168,8 @@
                           (if new-value
                               (begin
                                 (element-type-values 'remove! element-type)
-                                (element-type-values 'add! element-type (new-udpate-time-value new-value (current-seconds))))
+                                (element-type-values 'add! element-type (new-udpate-time-value new-value (current-seconds)))
+                                new-value)
                               #f))))
                   (loop (cdr devs)))))))
     ;e===
@@ -205,7 +206,8 @@
                    (if executed?
                        (begin
                          (element-type-values 'remove! element-type)
-                         (element-type-values 'add! element-type (new-udpate-time-value value (current-seconds))))
+                         (element-type-values 'add! element-type (new-udpate-time-value value (current-seconds)))
+                         executed?)
                        #f)))
                 (else (loop (cdr devs))))))))
     ;e===
