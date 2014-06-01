@@ -27,16 +27,21 @@
 (define (instruction-to-list instruction)
 ; SOURCE
   (cond
-    ((equal? (instruction 'tag) TAG_GET) (list TAG_GET (instruction 'get-element-type)))
-    ((equal? (instruction 'tag) TAG_PUT) (list TAG_PUT (instruction 'get-element-type) (instruction 'get-value)))
-    ((equal? (instruction 'tag) TAG_RET) (list TAG_RET (instruction 'get-value)))
+    ((equal? (instruction 'tag) TAG_GET)
+     (list TAG_GET (instruction 'get-element-type)))
+    ((equal? (instruction 'tag) TAG_PUT) 
+     (list TAG_PUT (instruction 'get-element-type) (instruction 'get-value)))
+    ((equal? (instruction 'tag) TAG_RET) 
+     (list TAG_RET (instruction 'get-value)))
     ((equal? (instruction 'tag) TAG_LIST)
      (let loop ((ctr 0)
                 (result (list TAG_LIST)))
        (if (equal? ctr (instruction 'nb-of-instructions))
            (reverse result)
-           (loop (+ ctr 1) (cons (instruction-to-list (instruction 'get-instruction ctr)) result)))))
-    (else (error "Error : Parser.class : unknown tag when trying to convert to list : " (instruction 'tag)))))
+           (loop (+ ctr 1) 
+                 (cons (instruction-to-list (instruction 'get-instruction ctr)) result)))))
+    (else 
+     (error "Error : Parser.class : unknown tag when trying to convert to list : " (instruction 'tag)))))
 ;e===
 
 ;b===m* parser/list-to-instruction
@@ -61,5 +66,6 @@
          (if (empty? curr)
              (apply new-instruction-list (reverse instr-lst))
              (loop (cons (list-to-instruction (car curr)) instr-lst) (cdr curr)))))
-    (else (error "Error : Parser.class : unknown tag when trying to convert to instruction : " (car lst)))))
+    (else 
+     (error "Error : Parser.class : unknown tag when trying to convert to instruction : " (car lst)))))
 ;e===

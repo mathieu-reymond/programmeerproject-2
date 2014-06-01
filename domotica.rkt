@@ -32,23 +32,23 @@
 ;=========================
 
 ;show gui
-(send (main-frame central-unit 400 300) show #t)
+(send (main-frame central-unit 600 500) show #t)
 
 (define wait-time 10) ;10 seconds
 ;record data
-;(define (record-data)
-;  (define (record-steward steward)
-;    (for-each-element-type (lambda(e)
-;                             (let ((res (steward 'get e)))
-;                               (if res
-;                                   (manager 'add-time-value steward e (current-seconds) res)
-;                                   'no-sensor-for-element-type)))))
-;  (let ((record? (equal? (modulo (current-seconds) wait-time) 0))) ;every "wait-time" seconds
-;    (if record?
-;        (central-unit 'for-each-steward (lambda(s) (record-steward s)))
-;        'wait))
-;  (record-data))
-;(thread record-data)
+(define (record-data)
+  (define (record-steward steward)
+    (for-each-element-type (lambda(e)
+                             (let ((res (steward 'get e)))
+                               (if res
+                                   (manager 'add-time-value steward e (current-seconds) res)
+                                   'no-sensor-for-element-type)))))
+  (let ((record? (equal? (modulo (current-seconds) wait-time) 0))) ;every "wait-time" seconds
+    (if record?
+        (central-unit 'for-each-steward (lambda(s) (record-steward s)))
+        'wait))
+  (record-data))
+(thread record-data)
 ;apply rules
 (define (apply-rules)
   (define (loop applied)

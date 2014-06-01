@@ -1,13 +1,15 @@
 #lang r5rs
 (#%require (only racket/base error)
-           (only racket/list empty?))
+           (only racket/list empty?)
+           (only racket/base current-seconds))
 
 (#%require "device.rkt"
            "sensor.rkt"
            "../communication/action.rkt"
            "../communication/messenger.rkt"
            "element-type.rkt"
-           "../rule/rule-manager.rkt")
+           "../rule/rule-manager.rkt"
+           "../structure/map.rkt")
 (#%provide Steward)
 (#%provide new-steward)
 
@@ -35,9 +37,14 @@
 ;  * ip - het ip adres van deze steward.
 ; SYNOPSIS
 (define (new-steward room ip)
-;e===
+  ;e===
+  (define value car)
+  (define update-time cdr)
+  (define new-udpate-time-value cons)
+  (define refresh-time 60)
   (let ((devices '())
-        (rule-manager '()))
+        (rule-manager '())
+        (element-type-values (new-map)))
     ;b===m* steward/class
     ; NAME
     ;  class
@@ -47,7 +54,7 @@
     ;  symbol - de naam van de classe
     ; SYNOPSIS
     (define (class)
-    ; SOURCE
+      ; SOURCE
       Steward)
     ;e===
     ;b===m* steward/get-room
@@ -59,7 +66,7 @@
     ;  string - de naam van de kamer.
     ; SYNOPSIS
     (define (get-room)
-    ; SOURCE
+      ; SOURCE
       room)
     ;e===
     ;b===m* steward/get-ip
@@ -71,7 +78,7 @@
     ;  string - het ip adres van deze steward.
     ; SYNOPSIS
     (define (get-ip) 
-    ; SOURCE
+      ; SOURCE
       ip)
     ;e===
     ;b===m* steward/get-devices
@@ -83,7 +90,7 @@
     ;  list - de lijst met de beheerste devices.
     ; SYNOPSIS
     (define (get-devices) 
-    ; SOURCE
+      ; SOURCE
       devices)
     ;e===
     ;b===m* steward/remove-device
@@ -98,7 +105,7 @@
     ;  #f - wanneer de device niet door deze steward beheerst is.
     ; SYNOPSIS
     (define (remove-device device)
-    ; SOURCE
+      ; SOURCE
       (define (loop previous current)
         (cond
           ((eq? '() current) #f) ;not in list
@@ -126,7 +133,7 @@
     ;  #<void>
     ; SYNOPSIS
     (define (add-device device) 
-    ; SOURCE
+      ; SOURCE
       (set! devices (cons device devices))
       ((new-action (string-append "Added device \""
                                   (device 'get-name)
@@ -147,13 +154,22 @@
     ;  #f - wanneer steward geen device beheerst die het gegeven element-type kan meten.
     ; SYNOPSIS
     (define (get element-type)
-    ; SOURCE
+      ; SOURCE
       (let loop ((devs (get-devices)))
         (if (empty? devs)
             #f ;no device with elements to match request
             (let ((is ((car devs) 'get element-type)))
               (if is ;result != false means we found a valid result
-                  ((send room (car devs) is) 'get-value)
+                  (let ((last-update (update-time (element-type-values 'find element-type)))
+                        (last-value (value (element-type-values 'find element-type))))
+                    (if (< (- (current-seconds) last-update) refresh-time)
+                        last-value
+                        (let ((new-value ((send room (car devs) is) 'get-value)))
+                          (if new-value
+                              (begin
+                                (element-type-values 'remove! element-type)
+                                (element-type-values 'add! element-type (new-udpate-time-value new-value (current-seconds))))
+                              #f))))
                   (loop (cdr devs)))))))
     ;e===
     ;b===m* steward/set
@@ -171,7 +187,7 @@
     ;  #f - wanneer steward geen device beheerst die het gegeven element-type kan aanpassen.
     ; SYNOPSIS
     (define (set element-type value)
-    ; SOURCE
+      ; SOURCE
       (let loop ((devs (get-devices)))
         (if (empty? devs)
             #f ;no device with elements to match request
@@ -185,7 +201,12 @@
                                              " in steward \""
                                              (get-room)
                                              "\"")) 'write)
-                 ((send room (car devs) is) 'get-value))
+                 (let ((executed? ((send room (car devs) is) 'get-value)))
+                   (if executed?
+                       (begin
+                         (element-type-values 'remove! element-type)
+                         (element-type-values 'add! element-type (new-udpate-time-value value (current-seconds))))
+                       #f)))
                 (else (loop (cdr devs))))))))
     ;e===
     ;b===m* steward/get-rule-manager
@@ -197,7 +218,7 @@
     ;  rule-manager - deze steward's rule manager.
     ; SYNOPSIS
     (define (get-rule-manager)
-    ; SOURCE
+      ; SOURCE
       rule-manager)
     ;e===
     
@@ -217,4 +238,6 @@
     (set! rule-manager (new-rule-manager dispatch))
     ;client ports
     (steward-port-map 'add! (get-room) (new-steward-ports dispatch))
+    ;init element-type-values
+    (for-each-element-type (lambda(et) (element-type-values 'add! et (new-udpate-time-value #f 0))))
     dispatch))
